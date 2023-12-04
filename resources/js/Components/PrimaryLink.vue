@@ -1,0 +1,25 @@
+<template>
+    <Link
+        :href="route"
+        class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-600 focus:bg-gray-700 active:bg-gray-900 focus:outline-none transition ease-in-out duration-150"
+    >
+        <slot />
+    </Link>
+</template>
+
+<script>
+import { Link } from '@inertiajs/vue3';
+
+export default {
+    props: {
+        route: {
+            type: [String, Object],
+            required: true,
+        },
+    },
+
+    components: {
+        Link,
+    },
+};
+</script>
