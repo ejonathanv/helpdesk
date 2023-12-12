@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\User;
+use App\Models\Department;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,9 +18,12 @@ class AgentFactory extends Factory
      */
     public function definition(): array
     {
+
+        $department = Department::inRandomOrder()->first();
+
         return [
             'user_id' => User::factory(),
-            'department_id' => 1,
+            'department_id' => $department->id,
             'job_title' => $this->faker->jobTitle,
             'phone' => $this->faker->phoneNumber,
         ];

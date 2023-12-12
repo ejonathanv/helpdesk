@@ -92,13 +92,17 @@ h6{
 
 
 .modal{
-    @apply fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-25;
+    @apply fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-25 overflow-y-auto;
 }
 
 .modalBody{
     @apply p-4 sm:p-8 bg-white shadow sm:rounded-lg w-full max-w-4xl mx-auto;
 }
 
+.modal.sm .modalBody{
+    @apply max-w-xl
+}
+
 .flashMsg{
-    @apply text-sm text-gray-400 mb-6 font-bold;
+    @apply text-sm text-green-500 mb-6 font-bold;
 }

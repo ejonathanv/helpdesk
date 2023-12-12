@@ -8,6 +8,7 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use App\Models\TicketCategory;
 use App\Models\TicketAttachment;
+use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Controllers\AccountController;
@@ -93,6 +94,14 @@ class TicketController extends Controller
             'account' => $account,
             'contacts' => $contacts,
             'categories' => $categories,
+        ]);
+    }
+
+    public function chat(Ticket $ticket){
+        $messages = $ticket->messages()->orderBy('created_at', 'ASC')->get();
+
+        return response()->json([
+            'messages' => $messages,
         ]);
     }
 

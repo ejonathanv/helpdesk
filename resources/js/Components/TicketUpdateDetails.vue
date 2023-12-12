@@ -181,6 +181,9 @@ export default {
                     t.$emit("update");
                     t.submiting = false;
                 },
+                onError: (errors) => {
+                    t.submiting = false;
+                },
             });
         },
     },

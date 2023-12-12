@@ -16,10 +16,18 @@ class Ticket extends Model
         'updated_at' => 'datetime:d M, Y h:i a',
     ];
 
-    protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name'];
+    protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name', 'site_attention_time', 'remote_attention_time', 'total_attention_time'];
+
+    public function messages(){
+        return $this->hasMany(ChatMessage::class);
+    }
 
     public function category(){
         return $this->belongsTo(TicketCategory::class);
+    }
+
+    public function events(){
+        return $this->hasMany(Event::class);
     }
 
     public function getCategoryNameAttribute()
@@ -107,6 +115,92 @@ class Ticket extends Model
                 return 'Urgente';
             default:
                 return 'Baja';
+        }
+    }
+
+    public function getSiteAttentionTimeAttribute()
+    {
+        $events = $this->events()->where('type', 'on-site')->get();
+        $totalTime = 0;
+
+        foreach ($events as $event) {
+            $totalTime += $event->total_time;
+        }
+
+        // Necesitamos formatear el tiempo total en dias, horas y minutos de esta forma: 1d 2h 30m
+
+        $days = floor($totalTime / (24 * 60));
+        $totalTime = $totalTime % (24 * 60);
+
+        $hours = floor($totalTime / 60);
+        $totalTime = $totalTime % 60;
+
+        $minutes = $totalTime;
+        $days = $days > 0 ? $days . 'd ' : '';
+        $hours = $hours > 0 ? $hours . 'h ' : '';
+        $minutes = $minutes > 0 ? $minutes . 'm' : '';
+
+        if($totalTime == 0){
+            return '0';
+        }else{
+            return $days . $hours . $minutes;
+        }
+    }
+
+    public function getRemoteAttentionTimeAttribute()
+    {
+        $events = $this->events()->where('type', 'remote')->get();
+        $totalTime = 0;
+
+        foreach ($events as $event) {
+            $totalTime += $event->total_time;
+        }
+
+        // Necesitamos formatear el tiempo total en dias, horas y minutos de esta forma: 1d 2h 30m
+
+        $days = floor($totalTime / (24 * 60));
+        $totalTime = $totalTime % (24 * 60);
+
+        $hours = floor($totalTime / 60);
+        $totalTime = $totalTime % 60;
+
+        $minutes = $totalTime;
+        $days = $days > 0 ? $days . 'd ' : '';
+        $hours = $hours > 0 ? $hours . 'h ' : '';
+        $minutes = $minutes > 0 ? $minutes . 'm' : '';
+
+        if($totalTime == 0){
+            return '0';
+        }else{
+            return $days . $hours . $minutes;
+        }
+    }
+
+    public function getTotalAttentionTimeAttribute(){
+        $events = $this->events;
+        $totalTime = 0;
+
+        foreach ($events as $event) {
+            $totalTime += $event->total_time;
+        }
+
+        // Necesitamos formatear el tiempo total en dias, horas y minutos de esta forma: 1d 2h 30m
+
+        $days = floor($totalTime / (24 * 60));
+        $totalTime = $totalTime % (24 * 60);
+
+        $hours = floor($totalTime / 60);
+        $totalTime = $totalTime % 60;
+
+        $minutes = $totalTime;
+        $days = $days > 0 ? $days . 'd ' : '';
+        $hours = $hours > 0 ? $hours . 'h ' : '';
+        $minutes = $minutes > 0 ? $minutes . 'm' : '';
+
+        if($totalTime == 0){
+            return '0';
+        }else{
+            return $days . $hours . $minutes;
         }
     }
 }

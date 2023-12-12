@@ -29,7 +29,7 @@
                 <td>{{ ticket.number }}</td>
                 <td>{{ ticket.subject }}</td>
                 <td>{{ ticket.account_name }}</td>
-                <td>{{ ticket.status }}</td>
+                <td v-html="ticket.status_badge"></td>
                 <td>{{ ticket.created_at }}</td>
                 <td class="text-right">
                     <Link :href="route('tickets.show', ticket.id)">
