@@ -7,6 +7,13 @@
             </p>
         </div>
 
+        <!-- Alerta de evento eliminado -->
+        <div v-if="$page.props.flash.eventDeleted" class="alert">
+            <p class="flashMsg">
+                {{ $page.props.flash.eventDeleted }}
+            </p>
+        </div>
+
         <!-- Encabezado y boton para crear nuevo evento -->
         <div class="flex items-center justify-between mb-7">
             <header>
@@ -38,6 +45,9 @@
                             Tiempo invertido
                         </th>
                         <th>Adjuntos</th>
+                        <th class="text-center">
+                            <span>Acciones</span>
+                        </th>
                     </tr>
                 </thead>
 
@@ -85,6 +95,13 @@
                                     <i class="fas fa-times fa-lg"></i>
                                 </p>
                             </div>  
+                        </td>
+                        <td class="text-center">
+                            <form action="" @submit.prevent="deleteEvent(event.id)">
+                                <button type="submit">
+                                    <i class="fas fa-trash-alt text-red-500"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 </tbody>
@@ -335,6 +352,23 @@ export default {
                 publicAs: "public",
                 files: "",
             };
+        },
+        deleteEvent(id) {
+            if (confirm("¿Estás seguro de eliminar este evento?")) {
+                this.$inertia.delete(
+                    "/dashboard/tickets/" + this.ticket.id + "/events/" + id,
+                    {
+                        preserveScroll: true,
+                        preserveState: true,
+                        onSuccess: () => {
+                            this.$parent.$emit("update");
+                        },
+                        onError: (errors) => {
+                            console.log(errors);
+                        },
+                    }
+                );
+            }
         },
     },
 };

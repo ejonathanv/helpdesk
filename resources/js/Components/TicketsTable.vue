@@ -29,8 +29,8 @@
                 <td>{{ ticket.number }}</td>
                 <td>{{ ticket.subject }}</td>
                 <td>{{ ticket.account_name }}</td>
-                <td v-html="ticket.status_badge"></td>
-                <td>{{ ticket.created_at }}</td>
+                <td class="whitespace-nowrap">{{ ticket.status }}</td>
+                <td class="whitespace-nowrap">{{ ticket.created_at }}</td>
                 <td class="text-right">
                     <Link :href="route('tickets.show', ticket.id)">
                         Ver más

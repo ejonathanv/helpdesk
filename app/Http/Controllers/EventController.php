@@ -104,8 +104,9 @@ class EventController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Event $event)
+    public function destroy(Ticket $ticket, Event $event)
     {
-        //
+        $event->delete();
+        return redirect()->back()->with('eventDeleted', 'Evento eliminado correctamente');
     }
 }
