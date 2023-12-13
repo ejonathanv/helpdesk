@@ -38,6 +38,14 @@ class EventController extends Controller
     {
         $event = $this->set_event_data($request, $ticket, new Event());
 
+        $history = [
+            'user_id' => auth()->user()->id,
+            'ticket_id' => $ticket->id,
+            'description' => 'Se ha creado un nuevo evento',
+        ];
+
+        $ticket->histories()->create($history);
+
         return redirect()->back()->with('newEventCreated', 'Evento creado correctamente');
     }
 

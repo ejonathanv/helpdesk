@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\TicketController;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChatMessageController;
@@ -46,6 +47,9 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 
     // Eventos del ticket
     Route::resource('tickets.events', EventController::class);
+
+    // Historias del ticket
+    Route::resource('tickets.histories', HistoryController::class);
 });
 
 

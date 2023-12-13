@@ -30,6 +30,10 @@ class Ticket extends Model
         return $this->hasMany(Event::class);
     }
 
+    public function histories(){
+        return $this->hasMany(History::class);
+    }
+
     public function getCategoryNameAttribute()
     {
         return $this->category ? $this->category->name : "Sin categoría";

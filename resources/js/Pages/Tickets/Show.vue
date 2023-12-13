@@ -58,7 +58,9 @@
                     @update="getEvents"></TicketEvents>
 
                 <TicketHistory v-if="currentTab === 'history'" 
-                    :ticket="ticket"></TicketHistory>
+                    :ticket="ticket"
+                    :histories="histories"
+                    @update="getHistories"></TicketHistory>
 
                 <TicketSecurity v-if="currentTab === 'security'" 
                     :ticket="ticket"></TicketSecurity>
@@ -114,6 +116,7 @@ export default {
             currentTab: "details",
             chat: [],
             events: [],
+            histories: [],
         };
     },
     mounted() {
@@ -159,6 +162,20 @@ export default {
                     console.log(error);
                 });
         },
+        getHistories(){
+            let t = this;
+            let route = '/dashboard/tickets/' + t.ticket.id + '/histories';
+            t.currentTab = "history";
+
+            fetch(route)
+                .then(response => response.json())
+                .then(data => {
+                    t.histories = data;
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
         tab(tab){
             this.currentTab = tab;
 
@@ -166,6 +183,8 @@ export default {
                 this.getChat();
             }else if(tab == 'events'){
                 this.getEvents();
+            }else if(tab == 'history'){
+                this.getHistories();
             }
         }
     }

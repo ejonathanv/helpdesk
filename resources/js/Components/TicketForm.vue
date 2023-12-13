@@ -70,7 +70,15 @@
             </div>
 
             <div>
-                <PrimaryButton type="submit"> Crear ticket </PrimaryButton>
+                <PrimaryButton type="submit">
+                    <span v-if="submiting" class="flex items-center space-x-2">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <span>
+                            Creando ticket...
+                        </span>
+                    </span>
+                    <span v-else>Enviar</span>
+                </PrimaryButton>
             </div>
         </form>
     </div>
@@ -98,6 +106,7 @@ export default {
     },
     data() {
         return {
+            submiting: false,
             errors: {},
             form: {
                 subject: "",
@@ -111,6 +120,8 @@ export default {
     methods: {
         submit() {
             let route = "/dashboard/tickets";
+
+            this.submiting = true;
             
             this.$inertia.post(route, this.form, {
                 preserveScroll: true,
@@ -122,9 +133,11 @@ export default {
                         account: "",
                     };
 
+                    this.submiting = false;
                     console.log("Ticket created");
                 },
                 onError: (errors) => {
+                    this.submiting = false;
                     this.errors = errors.errors;
                 },
             });

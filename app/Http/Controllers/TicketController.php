@@ -45,6 +45,12 @@ class TicketController extends Controller
     {
         $ticket = $this->update_ticket(new Ticket(), $request);
 
+        $ticket->histories()->create([
+            'user_id' => auth()->user()->id,
+            'ticket_id' => $ticket->id,
+            'description' => 'Se creó el ticket #' . $ticket->number . '.'
+        ]);
+
         return redirect()
             ->route('tickets.show', $ticket->id)
             ->with('success', 'El ticket ha sido creado exitosamente.');
@@ -118,9 +124,38 @@ class TicketController extends Controller
      */
     public function update(UpdateTicketRequest $request, Ticket $ticket)
     {
+
+        $status = $ticket->status_id;
+        $priority = $ticket->priority_id;
+        $severity = $ticket->severity_id;
+
         $ticket->status_id = $request->status_id;
         $ticket->priority_id = $request->priority_id;
         $ticket->severity_id = $request->severity_id;
+
+        if($status != $request->status_id){
+            $ticket->histories()->create([
+                'user_id' => auth()->user()->id,
+                'ticket_id' => $ticket->id,
+                'description' => 'Se cambió el estado del ticket a ' . $ticket->status . '.'
+            ]);
+        }
+
+        if($priority != $request->priority_id){
+            $ticket->histories()->create([
+                'user_id' => auth()->user()->id,
+                'ticket_id' => $ticket->id,
+                'description' => 'Se cambió la prioridad del ticket a ' . $ticket->priority . '.'
+            ]);
+        }
+
+        if($severity != $request->severity_id){
+            $ticket->histories()->create([
+                'user_id' => auth()->user()->id,
+                'ticket_id' => $ticket->id,
+                'description' => 'Se cambió la severidad del ticket a ' . $ticket->severity . '.'
+            ]);
+        }
 
         $ticket->save();
 
@@ -149,6 +184,12 @@ class TicketController extends Controller
             $ticket->save();
         }
 
+        $ticket->histories()->create([
+            'user_id' => auth()->user()->id,
+            'ticket_id' => $ticket->id,
+            'description' => 'Se cambió la categoría del ticket a ' . $ticket->category->full_name . '.'
+        ]);
+
         return redirect()
             ->back();
     }
@@ -162,6 +203,12 @@ class TicketController extends Controller
 
         $ticket->save();
 
+        $ticket->histories()->create([
+            'user_id' => auth()->user()->id,
+            'ticket_id' => $ticket->id,
+            'description' => 'Se asignó a ' . $contact['name'] . ' como contacto de la cuenta.'
+        ]);
+
         $response = "Se asignó a " . $contact['name'] . " como contacto de la cuenta.";
 
         return redirect()
@@ -173,6 +220,12 @@ class TicketController extends Controller
         $agent = Agent::find($request->agent_id);
         $ticket->agent_id = $agent->id;
         $ticket->save();
+
+        $ticket->histories()->create([
+            'user_id' => auth()->user()->id,
+            'ticket_id' => $ticket->id,
+            'description' => 'Se asignó a ' . $agent->user->name . ' como ingeniero responsable.'
+        ]);
 
         $response = "Se asignó a " . $agent->user->name . " como ingeniero responsable.";
 

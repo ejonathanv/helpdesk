@@ -11,6 +11,28 @@
                 </p>
             </header>
         </div>
+
+        <div>
+            <table class="table">
+                <tbody>
+                    <tr v-for="history in histories" :key="history.id">
+                        <td>
+                            <p class="font-bold text-sm">
+                                {{ history.description }}
+                            </p>
+
+                            <p class="text-gray-400 text-xs font-bold">
+                                Por: {{ history.user.name }}
+                            </p>
+                            <p class="text-gray-400 text-xs font-bold">
+                                Fecha: {{ history.created_at }}
+                            </p>
+
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
@@ -20,6 +42,10 @@ export default {
     props: {
         ticket: {
             type: Object,
+            required: true,
+        },
+        histories: {
+            type: Array,
             required: true,
         },
     },
