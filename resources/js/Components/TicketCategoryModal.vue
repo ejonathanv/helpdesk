@@ -20,6 +20,15 @@
             </div>
 
             <div class="flex flex-col space-y-6">
+                <div
+                    v-if="$page.props.errors.updateTicketCategory"
+                    class="text-dynacom-red text-sm"
+                >
+                    <p v-for="error in $page.props.errors.updateTicketCategory">
+                        {{ error }}
+                    </p>
+                </div>
+
                 <div>
                     <InputLabel for="category" value="Primera categoría" />
                     <select
@@ -145,9 +154,13 @@ export default {
 
             this.$inertia.put(route, data, {
                 preserveScroll: true,
+                errorBag: "updateTicketCategory",
                 onSuccess: () => {
                     this.submiting = false;
                     this.close();
+                },
+                onError: () => {
+                    this.submiting = false;
                 },
             });
         },

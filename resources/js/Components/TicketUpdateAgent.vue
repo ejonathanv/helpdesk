@@ -24,6 +24,14 @@
                     {{ agent.user.name }} <span v-if="agent.job_title"> - {{ agent.job_title }}</span>
                 </option>
             </select>
+
+            <!-- We need to display the updateTicketDetails error -->
+            <div
+                v-if="$page.props.errors.updateAgent"
+                class="text-dynacom-red text-sm"
+            >
+                {{ $page.props.errors.updateAgent.agent_id }}
+            </div>
         </div>
 
         <div v-if="$page.props.flash.ticketAgent" class="alert">
@@ -80,7 +88,11 @@ export default {
             t.$inertia.put(route, data, {
                 preserveState: true,
                 preserveScroll: true,
+                errorBag: "updateAgent",
                 onSuccess: (data) => {
+                    t.submiting = false;
+                },
+                onError: (data) => {
                     t.submiting = false;
                 },
             });

@@ -27,6 +27,7 @@ return new class extends Migration
             $table->integer('priority_id')->default(1)->default('');
             $table->integer('category_id')->nullable()->default('');
             $table->integer('severity_id')->default(1)->default('');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

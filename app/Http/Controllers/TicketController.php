@@ -56,7 +56,8 @@ class TicketController extends Controller
             ->with('success', 'El ticket ha sido creado exitosamente.');
     }
 
-    public function update_ticket($ticket, $request){
+    public function update_ticket($ticket, $request)
+    {
         $ticket->user_id = auth()->user()->id;
         $ticket->subject = $request->subject;
         $ticket->content = $request->content;
@@ -65,7 +66,7 @@ class TicketController extends Controller
 
         $ticket->save();
 
-        if($request->hasFile('attachment')){
+        if ($request->hasFile('attachment')) {
             // We need to move the file to the public folder on attachments folder
             $file = $request->file('attachment');
             $fileName = $ticket->id . '.' . hexdec(uniqid()) . '.' . $file->getClientOriginalExtension();
@@ -103,7 +104,8 @@ class TicketController extends Controller
         ]);
     }
 
-    public function chat(Ticket $ticket){
+    public function chat(Ticket $ticket)
+    {
         $messages = $ticket->messages()->orderBy('created_at', 'ASC')->get();
 
         return response()->json([
@@ -133,7 +135,7 @@ class TicketController extends Controller
         $ticket->priority_id = $request->priority_id;
         $ticket->severity_id = $request->severity_id;
 
-        if($status != $request->status_id){
+        if ($status != $request->status_id) {
             $ticket->histories()->create([
                 'user_id' => auth()->user()->id,
                 'ticket_id' => $ticket->id,
@@ -141,7 +143,7 @@ class TicketController extends Controller
             ]);
         }
 
-        if($priority != $request->priority_id){
+        if ($priority != $request->priority_id) {
             $ticket->histories()->create([
                 'user_id' => auth()->user()->id,
                 'ticket_id' => $ticket->id,
@@ -149,7 +151,7 @@ class TicketController extends Controller
             ]);
         }
 
-        if($severity != $request->severity_id){
+        if ($severity != $request->severity_id) {
             $ticket->histories()->create([
                 'user_id' => auth()->user()->id,
                 'ticket_id' => $ticket->id,
@@ -164,22 +166,38 @@ class TicketController extends Controller
             ->with('ticketDetails', 'El ticket ha sido actualizado exitosamente.');
     }
 
-    public function update_category(Request $request, Ticket $ticket){
+    public function update_category(Request $request, Ticket $ticket)
+    {
+
+        $request->validate([
+            'category_one' => 'required|integer|exists:ticket_categories,id',
+            'category_two' => 'nullable|integer|exists:ticket_categories,id',
+            'category_three' => 'nullable|integer|exists:ticket_categories,id',
+        ], [
+            'category_one.required' => 'La categoría es requerida',
+            'category_one.integer' => 'La categoría debe ser un número entero',
+            'category_one.exists' => 'La categoría seleccionada no es válida',
+            'category_two.integer' => 'La categoría debe ser un número entero',
+            'category_two.exists' => 'La categoría seleccionada no es válida',
+            'category_three.integer' => 'La categoría debe ser un número entero',
+            'category_three.exists' => 'La categoría seleccionada no es válida',
+        ]);
 
         $category = null;
-        if($request->category_one){
+
+        if ($request->category_one) {
             $category = TicketCategory::find($request->category_one);
         }
 
-        if($request->category_two){
+        if ($request->category_two) {
             $category = TicketCategory::find($request->category_two);
         }
 
-        if($request->category_three){
+        if ($request->category_three) {
             $category = TicketCategory::find($request->category_three);
         }
 
-        if($category){
+        if ($category) {
             $ticket->category_id = $category->id;
             $ticket->save();
         }
@@ -194,7 +212,16 @@ class TicketController extends Controller
             ->back();
     }
 
-    public function update_contact(Request $request, Ticket $ticket){
+    public function update_contact(Request $request, Ticket $ticket)
+    {
+
+        $request->validate([
+            'contact_id' => 'required|integer',
+        ], [
+            'contact_id.required' => 'El contacto es requerido',
+            'contact_id.integer' => 'El contacto debe ser un número entero'
+        ]);
+
         $contact = app(AccountController::class)->contact($request->contact_id);
 
         $ticket->contact_id = $contact['id'];
@@ -216,7 +243,17 @@ class TicketController extends Controller
             ->with('ticketContact', $response);
     }
 
-    public function update_agent(Request $request, Ticket $ticket){
+    public function update_agent(Request $request, Ticket $ticket)
+    {
+
+        $request->validate([
+            'agent_id' => 'required|integer|exists:agents,id',
+        ], [
+            'agent_id.required' => 'El ingeniero es requerido',
+            'agent_id.integer' => 'El ingeniero debe ser un número entero',
+            'agent_id.exists' => 'El ingeniero seleccionado no es válido',
+        ]);
+
         $agent = Agent::find($request->agent_id);
         $ticket->agent_id = $agent->id;
         $ticket->save();
@@ -239,6 +276,30 @@ class TicketController extends Controller
      */
     public function destroy(Ticket $ticket)
     {
-        //
+
+        $archive = request()->archive;
+
+        if ($archive) {
+            $ticket->histories()->create([
+                'user_id' => auth()->user()->id,
+                'ticket_id' => $ticket->id,
+                'description' => 'Se archivó el ticket.'
+            ]);
+            
+            $ticket->delete();
+
+            return redirect()
+                ->route('tickets.index')
+                ->with('ticketArchived', 'El ticket ha sido archivado exitosamente.');
+        }else{
+            $ticket->events()->delete();
+            $ticket->histories()->delete();
+            $ticket->messages()->delete();
+            $ticket->forceDelete();
+    
+            return redirect()
+                ->route('tickets.index')
+                ->with('ticketArchived', 'El ticket ha sido eliminado exitosamente.');
+        }
     }
 }

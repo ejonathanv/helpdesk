@@ -75,6 +75,11 @@
                             <option value="5">Monitoreo</option>
                             <option value="6">Cerrado</option>
                         </select>
+
+                        <!-- We need to display the updateTicketDetails error -->
+                        <div v-if="$page.props.errors.updateTicketDetails" class="text-dynacom-red text-sm">
+                            {{ $page.props.errors.updateTicketDetails.status_id }}
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -94,6 +99,11 @@
                             <option value="3">Alta</option>
                             <option value="4">Urgente</option>
                         </select>
+
+                        <!-- We need to display the updateTicketDetails error -->
+                        <div v-if="$page.props.errors.updateTicketDetails" class="text-dynacom-red text-sm">
+                            {{ $page.props.errors.updateTicketDetails.priority_id }}
+                        </div>
                     </td>
                 </tr>
                 <tr>
@@ -113,6 +123,10 @@
                             <option value="3">Alta</option>
                             <option value="4">Urgente</option>
                         </select>
+                        <!-- We need to display the updateTicketDetails error -->
+                        <div v-if="$page.props.errors.updateTicketDetails" class="text-dynacom-red text-sm">
+                            {{ $page.props.errors.updateTicketDetails.severity_id }}
+                        </div>
                     </td>
                 </tr>
             </tbody>
@@ -177,6 +191,7 @@ export default {
             t.$inertia.put(`/dashboard/tickets/${t.ticket.id}`, t.ticket, {
                 preserveState: true,
                 preserveScroll: true,
+                errorBag: "updateTicketDetails",
                 onSuccess: (data) => {
                     t.$emit("update");
                     t.submiting = false;
