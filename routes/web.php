@@ -3,6 +3,7 @@
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Application;
+use App\Http\Controllers\AgentController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\HistoryController;
@@ -50,6 +51,13 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 
     // Historias del ticket
     Route::resource('tickets.histories', HistoryController::class);
+
+    // Edicion de ingenieros
+    Route::resource('agents', AgentController::class);
+    Route::post('agents/{agent}/personal-data', [AgentController::class, 'personal_data'])->name('agents.personal-data');
+    Route::post('agents/{agent}/update-permissions', [AgentController::class, 'update_permissions'])->name('agents.update-permissions');
+    Route::post('agents/{agent}/update-security', [AgentController::class, 'update_security'])->name('agents.update-security');
+
 });
 
 

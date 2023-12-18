@@ -26,6 +26,7 @@ class AgentFactory extends Factory
             'department_id' => $department->id,
             'job_title' => $this->faker->jobTitle,
             'phone' => $this->faker->phoneNumber,
+            'mobile' => $this->faker->phoneNumber,
         ];
     }
 }

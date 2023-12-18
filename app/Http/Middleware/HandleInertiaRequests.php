@@ -42,6 +42,9 @@ class HandleInertiaRequests extends Middleware
                 'newEventCreated' => fn () => $request->session()->get('newEventCreated'),
                 'eventDeleted' => fn () => $request->session()->get('eventDeleted'),
                 'ticketArchived' => fn () => $request->session()->get('ticketArchived'),
+                'agentUpdated' => fn () => $request->session()->get('agentUpdated'),
+                'agentPermissionsUpdated' => fn () => $request->session()->get('agentPermissionsUpdated'),
+                'agentSecurityUpdated' => fn () => $request->session()->get('agentSecurityUpdated'),
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),

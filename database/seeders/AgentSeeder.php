@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Agent;
+use App\Models\UserPermission;
 use Illuminate\Database\Seeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
@@ -13,6 +14,10 @@ class AgentSeeder extends Seeder
      */
     public function run(): void
     {
-        Agent::factory()->count(10)->create();
+        Agent::factory()->count(10)->create()->each(function ($agent) {
+            UserPermission::factory()->create([
+                'user_id' => $agent->user_id
+            ]);
+        });
     }
 }

@@ -9,7 +9,28 @@ class Agent extends Model
 {
     use HasFactory;
 
-    public function user(){
+    protected $guarded = [];
+    protected $appends = ['status_name'];
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function getStatusNameAttribute()
+    {
+        switch ($this->status) {
+            case 'active':
+                return 'Activo';
+            case 'inactive':
+                return 'Inactivo';
+            default:
+                return 'Desconocido';
+        }
     }
 }
