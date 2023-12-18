@@ -232,11 +232,21 @@ class AgentController extends Controller
         return redirect()->back()->with('agentSecurityUpdated', 'Contraseña actualizada correctamente');
     }
 
+    public function suspend(Request $request, Agent $agent){
+        $agent->status = $agent->status == 'active' ? 'inactive' : 'active';
+        $agent->save();
+
+        return redirect()->back()->with('agentSuspended', 'Se actualizó el estado del ingeniero correctamente');
+    }
+
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(Agent $agent)
     {
-        //
+        $agent->user->delete();
+        $agent->delete();
+
+        return redirect()->route('agents.index')->with('agentDeleted', 'Ingeniero eliminado correctamente');
     }
 }

@@ -57,6 +57,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::post('agents/{agent}/personal-data', [AgentController::class, 'personal_data'])->name('agents.personal-data');
     Route::post('agents/{agent}/update-permissions', [AgentController::class, 'update_permissions'])->name('agents.update-permissions');
     Route::post('agents/{agent}/update-security', [AgentController::class, 'update_security'])->name('agents.update-security');
+    Route::post('agents/{agent}/suspend', [AgentController::class, 'suspend'])->name('agents.suspend');
 
 });
 

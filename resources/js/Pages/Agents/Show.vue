@@ -15,6 +15,9 @@
 
             <!-- Seguridad / Contraseña -->
             <AgentSecurity :agent="agent" />
+
+            <!-- Eliminar cuenta -->
+            <AgentDelete :agent="agent" />
         </div>
     </AuthenticatedLayout>
 </template>
@@ -25,6 +28,7 @@ import { Head } from "@inertiajs/vue3";
 import AgentPersonalData from "@/Components/AgentPersonalData.vue";
 import AgentPermissions from "@/Components/AgentPermissions.vue";
 import AgentSecurity from "@/Components/AgentSecurity.vue";
+import AgentDelete from "@/Components/AgentDelete.vue";
 
 export default {
     name: "ShowTicket",
@@ -48,6 +52,7 @@ export default {
         AgentPersonalData,
         AgentPermissions,
         AgentSecurity,
+        AgentDelete,
     },
 };
 </script>

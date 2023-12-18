@@ -14,9 +14,9 @@
     </div>
 
     <!-- Alerta de ingeniero dado de baja o eliminado -->
-    <div v-if="$page.props.flash.agentDown" class="alert">
+    <div v-if="$page.props.flash.agentDeleted" class="alert">
         <p class="flashMsg">
-            {{ $page.props.flash.agentDown }}
+            {{ $page.props.flash.agentDeleted }}
         </p>
     </div>
 

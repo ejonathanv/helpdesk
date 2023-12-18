@@ -45,6 +45,8 @@ class HandleInertiaRequests extends Middleware
                 'agentUpdated' => fn () => $request->session()->get('agentUpdated'),
                 'agentPermissionsUpdated' => fn () => $request->session()->get('agentPermissionsUpdated'),
                 'agentSecurityUpdated' => fn () => $request->session()->get('agentSecurityUpdated'),
+                'agentSuspended' => fn () => $request->session()->get('agentSuspended'),
+                'agentDeleted' => fn () => $request->session()->get('agentDeleted'),
             ],
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
