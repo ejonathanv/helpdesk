@@ -17,7 +17,7 @@ class Ticket extends Model
         'updated_at' => 'datetime:d M, Y h:i a',
     ];
 
-    protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name', 'site_attention_time', 'remote_attention_time', 'total_attention_time'];
+    protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name', 'site_attention_time', 'remote_attention_time', 'total_attention_time', 'agent_name'];
 
     public function messages(){
         return $this->hasMany(ChatMessage::class);
@@ -33,6 +33,14 @@ class Ticket extends Model
 
     public function histories(){
         return $this->hasMany(History::class);
+    }
+
+    public function agent(){
+        return $this->belongsTo(Agent::class);
+    }
+
+    public function getAgentNameAttribute(){
+        return $this->agent ? $this->agent->user->name : 'Sin asignar';
     }
 
     public function getCategoryNameAttribute()

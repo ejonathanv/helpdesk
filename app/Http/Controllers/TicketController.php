@@ -89,7 +89,6 @@ class TicketController extends Controller
      */
     public function show(Ticket $ticket)
     {
-
         $account = app(AccountController::class)->account($ticket->account_id);
         $contacts = app(AccountController::class)->contacts($ticket->account_id);
         $agents = Agent::with('user')->get()->sortBy('user.name')->values()->all();
@@ -216,10 +215,9 @@ class TicketController extends Controller
     {
 
         $request->validate([
-            'contact_id' => 'required|integer',
+            'contact_id' => 'required|string',
         ], [
-            'contact_id.required' => 'El contacto es requerido',
-            'contact_id.integer' => 'El contacto debe ser un número entero'
+            'contact_id.required' => 'El contacto es requerido'
         ]);
 
         $contact = app(AccountController::class)->contact($request->contact_id);

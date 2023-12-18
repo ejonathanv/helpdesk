@@ -6,6 +6,7 @@
         </template>
         <div class="container py-7">
             <div class="card">
+                <!-- Formulario de creación de tickets -->
                 <TicketForm :accounts="accounts" />
             </div>
         </div>

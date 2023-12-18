@@ -13,6 +13,12 @@
                 </header>
             </div>
 
+            <div v-if="$page.props.flash.agentCreated" class="alert">
+                <p class="flashMsg">
+                {{ $page.props.flash.agentCreated }}
+                </p> 
+            </div>
+
             <form action="" class="space-y-6" @submit.prevent="update">
 
                 <div>

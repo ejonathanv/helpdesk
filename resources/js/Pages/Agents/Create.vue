@@ -8,6 +8,7 @@
         </template>
         <div class="container py-7">
             <div class="card">
+                <!-- Formulario de creación de ingenieros -->
                 <div class="w-6/12">
                     <header>
                         <h2 class="text-lg font-medium text-gray-900">
@@ -234,7 +235,6 @@ export default {
             let route = "/dashboard/agents";
             t.submiting = true;
             t.$inertia.post(route, t.agent, {
-                preserveScroll: true,
                 onSuccess: () => {
                     t.submiting = false;
                     t.resetForm();
