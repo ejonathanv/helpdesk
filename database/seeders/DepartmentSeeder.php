@@ -14,6 +14,10 @@ class DepartmentSeeder extends Seeder
     public function run(): void
     {
         Department::factory()->create([
+            'name' => 'General',
+        ]);
+
+        Department::factory()->create([
             'name' => 'Servicio',
         ]);
 

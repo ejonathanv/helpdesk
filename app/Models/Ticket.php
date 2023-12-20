@@ -17,7 +17,7 @@ class Ticket extends Model
         'updated_at' => 'datetime:d M, Y h:i a',
     ];
 
-    protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name', 'site_attention_time', 'remote_attention_time', 'total_attention_time', 'agent_name'];
+    protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name', 'site_attention_time', 'remote_attention_time', 'total_attention_time', 'agent_name', 'department_name'];
 
     public function messages(){
         return $this->hasMany(ChatMessage::class);
@@ -39,8 +39,16 @@ class Ticket extends Model
         return $this->belongsTo(Agent::class);
     }
 
+    public function department(){
+        return $this->belongsTo(Department::class);
+    }
+
     public function getAgentNameAttribute(){
         return $this->agent ? $this->agent->user->name : 'Sin asignar';
+    }
+
+    public function getDepartmentNameAttribute(){
+        return $this->department ? $this->department->name : 'Sin departamento';
     }
 
     public function getCategoryNameAttribute()

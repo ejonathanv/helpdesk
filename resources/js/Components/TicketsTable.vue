@@ -29,6 +29,7 @@
                     <th>Asunto</th>
                     <th>Cuenta</th>
                     <th>Ingeniero</th>
+                    <th>Departamento</th>
                     <th>Status</th>
                     <th>Fecha</th>
                     <th class="text-right">Detalles</th>
@@ -40,6 +41,7 @@
                     <td>{{ ticket.subject }}</td>
                     <td>{{ ticket.account_name }}</td>
                     <td>{{ ticket.agent_name }}</td>
+                    <td>{{ ticket.department_name }}</td>
                     <td class="whitespace-nowrap">{{ ticket.status }}</td>
                     <td class="whitespace-nowrap">{{ ticket.created_at }}</td>
                     <td class="text-right">

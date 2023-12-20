@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Inertia\Inertia;
+use App\Models\Department;
 use App\Http\Requests\StoreDepartmentRequest;
 use App\Http\Requests\UpdateDepartmentRequest;
-use App\Models\Department;
 
 class DepartmentController extends Controller
 {
@@ -13,7 +14,11 @@ class DepartmentController extends Controller
      */
     public function index()
     {
-        //
+        $departments = Department::orderBy('name', 'asc')->get();
+
+        return Inertia::render('Departments/Index', [
+            'departments' => $departments
+        ]);
     }
 
     /**
@@ -37,7 +42,9 @@ class DepartmentController extends Controller
      */
     public function show(Department $department)
     {
-        //
+        return Inertia::render('Departments/Show', [
+            'department' => $department
+        ]);
     }
 
     /**
@@ -53,7 +60,12 @@ class DepartmentController extends Controller
      */
     public function update(UpdateDepartmentRequest $request, Department $department)
     {
-        //
+        $department->name = $request->name;
+        $department->save();
+
+        return redirect()
+            ->back()
+            ->with('departmentUpdated', 'El departamento ha sido actualizado exitosamente.');
     }
 
     /**
@@ -61,6 +73,23 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        $tickets = $department->tickets;
+        $agents = $department->agents;
+
+        foreach ($tickets as $ticket) {
+            $ticket->department_id = "";
+        }
+
+        foreach ($agents as $agent) {
+            $generalDepartment = Department::where('name', 'General')->first();
+            $agent->department_id = $generalDepartment->id;
+            $agent->save();
+        }
+
+        $department->delete();
+
+        return redirect()
+            ->route('departments.index')
+            ->with('departmentDeleted', 'El departamento ha sido eliminado exitosamente.');
     }
 }

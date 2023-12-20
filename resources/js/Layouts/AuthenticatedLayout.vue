@@ -35,8 +35,11 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('tickets.index')" :active="route().current('tickets*')">
                                     Tickets
                                 </NavLink>
-                                <NavLink :href="route('agents.index')" :active="route().current('agents*')">
-                                    Ingenieros
+                                <NavLink href="#">
+                                    Cuentas
+                                </NavLink>
+                                <NavLink href="#">
+                                    Reportes
                                 </NavLink>
                             </div>
                         </div>
@@ -71,6 +74,8 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                        <DropdownLink :href="route('agents.index')"> Ingenieros </DropdownLink>
+                                        <DropdownLink :href="route('departments.index')"> Departamentos </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Log Out
                                         </DropdownLink>

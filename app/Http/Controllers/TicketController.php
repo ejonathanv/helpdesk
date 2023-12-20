@@ -254,6 +254,7 @@ class TicketController extends Controller
 
         $agent = Agent::find($request->agent_id);
         $ticket->agent_id = $agent->id;
+        $ticket->department_id = $agent->department_id;
         $ticket->save();
 
         $ticket->histories()->create([

@@ -11,7 +11,7 @@ class UpdateDepartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,15 @@ class UpdateDepartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => 'required|string|unique:departments,name,' . $this->department->id,
+        ];
+    }
+
+    public function messages(){
+        return [
+            'name.required' => 'El campo nombre es requerido',
+            'name.string' => 'El campo nombre debe ser una cadena de texto',
+            'name.unique' => 'El campo nombre ya existe',
         ];
     }
 }

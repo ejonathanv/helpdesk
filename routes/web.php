@@ -9,6 +9,7 @@ use App\Http\Controllers\TicketController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\ChatMessageController;
 use App\Http\Controllers\TicketCategoryController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -58,6 +59,14 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::post('agents/{agent}/update-permissions', [AgentController::class, 'update_permissions'])->name('agents.update-permissions');
     Route::post('agents/{agent}/update-security', [AgentController::class, 'update_security'])->name('agents.update-security');
     Route::post('agents/{agent}/suspend', [AgentController::class, 'suspend'])->name('agents.suspend');
+
+
+    // Rutas de configuracion
+    Route::group(['prefix' => 'config'], function(){
+        // Edicion de departamentos
+        Route::resource('departments', DepartmentController::class);
+    });
+
 
 });
 

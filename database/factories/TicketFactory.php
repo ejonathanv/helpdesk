@@ -33,7 +33,7 @@ class TicketFactory extends Factory
             'contact_id' => "",
             'contact_name' => "",
             'contact_email' => "",
-            'department_id' => 1,
+            'department_id' => $agent->department_id,
             'agent_id' => $agent->id,
             'subject' => $this->faker->sentence,
             'content' => $this->faker->paragraph,
