@@ -73,11 +73,11 @@ const showingNavigationDropdown = ref(false);
                                     </template>
 
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Profile </DropdownLink>
+                                        <DropdownLink :href="route('profile.edit')"> Mi cuenta </DropdownLink>
                                         <DropdownLink :href="route('agents.index')"> Ingenieros </DropdownLink>
                                         <DropdownLink :href="route('departments.index')"> Departamentos </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
-                                            Log Out
+                                            Cerrar sesión
                                         </DropdownLink>
                                     </template>
                                 </Dropdown>
