@@ -39,6 +39,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     // La primer ruta debe ser dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     Route::resource('tickets', TicketController::class);
+    
     // Detalles generales
     Route::get('get-subcategories/{parent}', [TicketCategoryController::class, 'subcategories'])->name('get-subcategories');
     Route::put('tickets/{ticket}/update-category', [TicketController::class, 'update_category'])->name('tickets.update-category');

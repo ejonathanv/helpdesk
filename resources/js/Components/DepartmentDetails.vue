@@ -29,6 +29,14 @@
                     </div>
                 </div>
 
+                <div>
+                    <InputLabel label="Descripción" value="Descripción del departamento" />
+                    <TextInput v-model="department.description" />
+                    <div v-if="$page.props.errors.updateDepartment" class="text-dynacom-red text-sm">
+                        {{ $page.props.errors.updateDepartment.description }}
+                    </div>
+                </div>
+
                 <div v-if="$page.props.flash.departmentUpdated" class="alert">
                     <p class="flashMsg !m-0">
                     {{ $page.props.flash.departmentUpdated }}

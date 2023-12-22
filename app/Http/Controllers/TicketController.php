@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Controllers\AccountController;
+use Illuminate\Support\Facades\Mail;
 
 class TicketController extends Controller
 {
@@ -235,6 +236,9 @@ class TicketController extends Controller
         ]);
 
         $response = "Se asignó a " . $contact['name'] . " como contacto de la cuenta.";
+
+        // Vamos a enviar un email al contacto para notificarle que se le asignó un ticket
+        Mail::to($contact['email'])->send(new \App\Mail\ContactTicketAssigned($ticket));
 
         return redirect()
             ->back()

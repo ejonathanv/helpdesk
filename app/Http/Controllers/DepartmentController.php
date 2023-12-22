@@ -26,7 +26,7 @@ class DepartmentController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Departments/Create');
     }
 
     /**
@@ -34,7 +34,15 @@ class DepartmentController extends Controller
      */
     public function store(StoreDepartmentRequest $request)
     {
-        //
+        $department = new Department();
+        $department->name = $request->name;
+        $department->description = $request->description;
+
+        $department->save();
+
+        return redirect()
+            ->route('departments.show', $department->id)
+            ->with('departmentCreated', 'El departamento ha sido creado exitosamente.');
     }
 
     /**
@@ -61,6 +69,7 @@ class DepartmentController extends Controller
     public function update(UpdateDepartmentRequest $request, Department $department)
     {
         $department->name = $request->name;
+        $department->description = $request->description;
         $department->save();
 
         return redirect()

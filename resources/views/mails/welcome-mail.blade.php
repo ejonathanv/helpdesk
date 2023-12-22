@@ -1,12 +1,17 @@
 <x-mail::message>
-# Introduction
+# Hola, {{ $name }}!
 
-The body of your message.
+Se creó tu cuenta en el sistema HelpDesk de Dynamic Communications. <br>
 
-<x-mail::button :url="''">
-Button Text
+Tus credenciales de acceso son las siguientes: <br>
+
+**Correo electrónico:** {{ $email }} <br>
+**Contraseña:** {{ $password }} <br>
+
+<x-mail::button :url="route('login')">
+Ingresar
 </x-mail::button>
 
-Thanks,<br>
+Saludos,<br>
 {{ config('app.name') }}
 </x-mail::message>

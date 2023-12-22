@@ -126,40 +126,6 @@
                             />
                         </div>
 
-                        <!-- Contraseña -->
-                        <h4
-                            class="font-semibold text-lg text-gray-800 leading-tight"
-                        >
-                            Seguridad
-                        </h4>
-
-                        <div class="flex items-start space-x-6">
-                            <div class="w-1/2">
-                                <InputLabel
-                                    label="Contraseña"
-                                    value="Contraseña"
-                                />
-                                <TextInput v-model="agent.password" type="password" />
-                                <InputError
-                                    class="mt-2"
-                                    :message="errors.password"
-                                />
-                            </div>
-                            <div class="w-1/2">
-                                <InputLabel
-                                    label="Confirmar contraseña"
-                                    value="Confirmar contraseña"
-                                />
-                                <TextInput
-                                    v-model="agent.password_confirmation" type="password"
-                                />
-                                <InputError
-                                    class="mt-2"
-                                    :message="errors.password_confirmation"
-                                />
-                            </div>
-                        </div>
-
                         <!-- boton de submit -->
                         <div>
                             <PrimaryButton
@@ -222,8 +188,6 @@ export default {
                 mobile: "",
                 job_title: "",
                 permissions: "",
-                password: "",
-                password_confirmation: "",
             },
             errors: {},
         };
@@ -235,6 +199,7 @@ export default {
             let route = "/dashboard/agents";
             t.submiting = true;
             t.$inertia.post(route, t.agent, {
+                preserveState: true,
                 onSuccess: () => {
                     t.submiting = false;
                     t.resetForm();
@@ -255,8 +220,6 @@ export default {
                 mobile: "",
                 job_title: "",
                 permissions: "",
-                password: "",
-                password_confirmation: "",
             };
         },
     },

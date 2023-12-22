@@ -9,6 +9,7 @@ use App\Models\Agent;
 use App\Mail\WelcomeMail;
 use App\Models\Department;
 use App\Models\Permission;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\UserPermission;
 use App\Mail\PasswordChangedMail;
@@ -70,11 +71,14 @@ class AgentController extends Controller
      */
     public function store(StoreAgentRequest $request)
     {
+
+        $password = Str::password(8);
+
         // Creamos el usuario del ingeniero
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->password = \Hash::make($request->password);
+        $user->password = \Hash::make($password);
         $user->save();
 
         // Creamos el perfil del ingeniero
@@ -92,17 +96,11 @@ class AgentController extends Controller
         $permissions->permission_id = $request->permissions;
         $permissions->save();
 
-        // Enviamos un email al ingeniero con sus credenciales
-        $details = [
-            'title' => 'Bienvenido a HelpDesk - Dynamic Communications',
-            'body' => 'Estas son tus credenciales para acceder a la plataforma de tickets',
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
+        Mail::to($request->email)->send(new WelcomeMail($request->name, $request->email, $password));
 
-        Mail::to($request->email)->send(new WelcomeMail($details));
-
-        return redirect()->route('agents.show', $agent->id)->with('agentCreated', 'Ingeniero creado correctamente');
+        return redirect()
+            ->route('agents.show', $agent)
+            ->with('agentCreated', 'Ingeniero creado correctamente');
 
     }
 

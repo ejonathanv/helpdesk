@@ -29,8 +29,6 @@ class StoreAgentRequest extends FormRequest
             'mobile' => 'nullable|string',
             'job_title' => 'nullable|string',
             'permissions' => 'required|exists:permissions,id',
-            'password' => 'required|string|min:8|confirmed',
-            'password_confirmation' => 'required|string|min:8',
         ];
     }
 
@@ -52,13 +50,6 @@ class StoreAgentRequest extends FormRequest
             'job_title.string' => 'El campo puesto debe ser una cadena de texto',
             'permissions.required' => 'El campo permisos es requerido',
             'permissions.exists' => 'El campo permisos debe ser un permiso existente',
-            'password.required' => 'El campo contraseña es requerido',
-            'password.string' => 'El campo contraseña debe ser una cadena de texto',
-            'password.min' => 'El campo contraseña debe tener al menos 8 caracteres',
-            'password.confirmed' => 'El campo contraseña debe ser igual al campo confirmar contraseña',
-            'password_confirmation.required' => 'El campo confirmar contraseña es requerido',
-            'password_confirmation.string' => 'El campo confirmar contraseña debe ser una cadena de texto',
-            'password_confirmation.min' => 'El campo confirmar contraseña debe tener al menos 8 caracteres',
         ];
     }
 }

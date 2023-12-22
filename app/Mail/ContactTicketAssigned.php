@@ -9,22 +9,18 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class WelcomeMail extends Mailable
+class ContactTicketAssigned extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $name;
-    public $email;
-    public $password;
+    public $ticket;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($name, $email, $password)
+    public function __construct($ticket)
     {
-        $this->name = $name;
-        $this->email = $email;
-        $this->password = $password;
+        $this->ticket = $ticket;
     }
 
     /**
@@ -33,7 +29,7 @@ class WelcomeMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Credenciales HelpDesk - Dynamic Communications',
+            subject: 'Detalles de tu ticket #' . $this->ticket->number,
         );
     }
 
@@ -43,7 +39,7 @@ class WelcomeMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            markdown: 'mails.welcome-mail',
+            markdown: 'mails.contact-ticket-assigned',
         );
     }
 
