@@ -1,12 +1,22 @@
 <template>
     <!-- Detalles generales -->
-    <TicketUpdateDetails :ticket="ticket" :categories="categories" />
+    <TicketUpdateDetails 
+        :ticket="ticket" 
+        :attachments="attachments" 
+        :categories="categories" 
+        :type="type" />
 
     <!-- Contacto del ticket -->
-    <TicketUpdateContact :ticket="ticket" :contacts="contacts" />
+    <TicketUpdateContact 
+        :ticket="ticket" 
+        :contacts="contacts" 
+        v-if="type === 'internal'" />
 
     <!-- Ingeniero asignado -->
-    <TicketUpdateAgent :ticket="ticket" :agents="agents" />
+    <TicketUpdateAgent 
+        :ticket="ticket" 
+        :agents="agents" 
+        v-if="type === 'internal'" />
 </template>
 
 <script>
@@ -23,9 +33,17 @@ export default {
         TicketUpdateAgent,
     },
     props: {
+        type: {
+            type: String,
+            default: "internal"
+        },
         ticket: {
             type: Object,
             required: true,
+        },
+        attachments: {
+            type: Array,
+            required: false,
         },
         agents: {
             type: Array,

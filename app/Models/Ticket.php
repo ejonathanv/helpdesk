@@ -1,71 +1,55 @@
 <?php
-
 namespace App\Models;
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
 class Ticket extends Model
 {
     use HasFactory, SoftDeletes;
-
     protected $dates = ['created_at', 'updated_at'];
-
     protected $casts = [
         'created_at' => 'datetime:d M, Y h:i a',
         'updated_at' => 'datetime:d M, Y h:i a',
     ];
-
     protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name', 'site_attention_time', 'remote_attention_time', 'total_attention_time', 'agent_name', 'department_name'];
-
     public function messages(){
         return $this->hasMany(ChatMessage::class);
     }
-
     public function category(){
         return $this->belongsTo(TicketCategory::class);
     }
-
     public function events(){
         return $this->hasMany(Event::class);
     }
-
     public function histories(){
         return $this->hasMany(History::class);
     }
-
     public function agent(){
         return $this->belongsTo(Agent::class);
     }
-
     public function department(){
         return $this->belongsTo(Department::class);
     }
-
+    public function attachments(){
+        return $this->hasMany(TicketAttachment::class);
+    }
     public function getAgentNameAttribute(){
         return $this->agent ? $this->agent->user->name : 'Sin asignar';
     }
-
     public function getDepartmentNameAttribute(){
         return $this->department ? $this->department->name : 'Sin departamento';
     }
-
     public function getCategoryNameAttribute()
     {
         return $this->category ? $this->category->name : "Sin categoría";
     }
-
     public function getFullCategoryNameAttribute(){
         return $this->category ? $this->category->full_name : "Sin categoría";
     }
-
     public function getNumberAttribute()
     {
         return str_pad($this->id, 6, '0', STR_PAD_LEFT);
     }
-
-
     public function getStatusAttribute()
     {
         switch ($this->status_id) {
@@ -81,11 +65,12 @@ class Ticket extends Model
                 return 'Monitoreo';
             case 6:
                 return 'Cerrado';
+            case 7:
+                return 'Cancelado';
             default:
                 return 'Abierto';
         }
     }
-
     public function getStatusBadgeAttribute()
     {
         switch ($this->status_id) {
@@ -101,12 +86,12 @@ class Ticket extends Model
                 return '<span class="badge badge-dark">Monitoreo</span>';
             case 6:
                 return '<span class="badge badge-secondary">Cerrado</span>';
+            case 7:
+                return '<span class="badge badge-danger">Cancelado</span>';
             default:
                 return '<span class="badge badge-primary">Abierto</span>';
-
         }
     }
-
     public function getPriorityAttribute()
     {
         switch ($this->priority_id) {
@@ -122,7 +107,6 @@ class Ticket extends Model
                 return 'Baja';
         }
     }
-
     public function getSeverityAttribute()
     {
         switch ($this->severity_id) {
@@ -138,87 +122,97 @@ class Ticket extends Model
                 return 'Baja';
         }
     }
-
     public function getSiteAttentionTimeAttribute()
     {
-        $events = $this->events()->where('type', 'on-site')->get();
+        $user = auth()->user() ? auth()->user() : null;
+        if($user){
+            $events = $this->events()
+                ->where('type', 'on-site')
+                ->get();
+        }else{
+            $events = $this->events()
+                ->where('type', 'on-site')
+                ->where('publicAs', 'public')
+                ->get();
+        }
         $totalTime = 0;
-
         foreach ($events as $event) {
             $totalTime += $event->total_time;
         }
-
+        $totalInMinutes = $totalTime;
         // Necesitamos formatear el tiempo total en dias, horas y minutos de esta forma: 1d 2h 30m
-
         $days = floor($totalTime / (24 * 60));
-        $totalTime = $totalTime % (24 * 60);
-
+        $totalTime = $totalTime - ($days * 24 * 60);
         $hours = floor($totalTime / 60);
-        $totalTime = $totalTime % 60;
-
+        $totalTime = $totalTime - ($hours * 60);
         $minutes = $totalTime;
         $days = $days > 0 ? $days . 'd ' : '';
         $hours = $hours > 0 ? $hours . 'h ' : '';
         $minutes = $minutes > 0 ? $minutes . 'm' : '';
-
-        if($totalTime == 0){
+        if($totalInMinutes == 0){
             return '0';
         }else{
             return $days . $hours . $minutes;
         }
     }
-
     public function getRemoteAttentionTimeAttribute()
     {
-        $events = $this->events()->where('type', 'remote')->get();
+        $user = auth()->user() ? auth()->user() : null;
+        if($user){
+            $events = $this->events()
+                ->where('type', 'remote')
+                ->get();
+        }else{
+            $events = $this->events()
+                ->where('type', 'remote')
+                ->where('publicAs', 'public')
+                ->get();
+        }
         $totalTime = 0;
-
         foreach ($events as $event) {
             $totalTime += $event->total_time;
         }
-
+        $totalInMinutes = $totalTime;
         // Necesitamos formatear el tiempo total en dias, horas y minutos de esta forma: 1d 2h 30m
-
         $days = floor($totalTime / (24 * 60));
-        $totalTime = $totalTime % (24 * 60);
-
+        $totalTime = $totalTime - ($days * 24 * 60);
         $hours = floor($totalTime / 60);
-        $totalTime = $totalTime % 60;
-
+        $totalTime = $totalTime - ($hours * 60);
         $minutes = $totalTime;
         $days = $days > 0 ? $days . 'd ' : '';
         $hours = $hours > 0 ? $hours . 'h ' : '';
         $minutes = $minutes > 0 ? $minutes . 'm' : '';
-
-        if($totalTime == 0){
+        if($totalInMinutes == 0){
             return '0';
         }else{
             return $days . $hours . $minutes;
         }
     }
-
-    public function getTotalAttentionTimeAttribute(){
-        $events = $this->events;
+    public function getTotalAttentionTimeAttribute()
+    {
+        $user = auth()->user() ? auth()->user() : null;
+        if($user){
+            $events = $this->events;
+        }else{
+            $events = $this->events()
+                ->where('publicAs', 'public')
+                ->get();
+        }
         $totalTime = 0;
-
         foreach ($events as $event) {
             $totalTime += $event->total_time;
         }
-
+        $totalInMinutes = $totalTime;
         // Necesitamos formatear el tiempo total en dias, horas y minutos de esta forma: 1d 2h 30m
-
         $days = floor($totalTime / (24 * 60));
-        $totalTime = $totalTime % (24 * 60);
-
+        $totalTime = $totalTime - ($days * 24 * 60);
         $hours = floor($totalTime / 60);
-        $totalTime = $totalTime % 60;
-
+        $totalTime = $totalTime - ($hours * 60);
         $minutes = $totalTime;
         $days = $days > 0 ? $days . 'd ' : '';
         $hours = $hours > 0 ? $hours . 'h ' : '';
         $minutes = $minutes > 0 ? $minutes . 'm' : '';
-
-        if($totalTime == 0){
+        if($totalInMinutes == 0){
             return '0';
         }else{
             return $days . $hours . $minutes;

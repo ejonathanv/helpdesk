@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tickets', function (Blueprint $table) {
             $table->id();
-            $table->integer('user_id');
+            $table->integer('user_id')->nullable();
             $table->string('account_id')->nullable()->default('');
             $table->string('account_name')->nullable()->default('');
             $table->string('contact_id')->nullable()->default('');
@@ -27,6 +27,7 @@ return new class extends Migration
             $table->integer('priority_id')->default(1)->default('');
             $table->integer('category_id')->nullable()->default('');
             $table->integer('severity_id')->default(1)->default('');
+            $table->string('cancellation_reason')->nullable()->default('');
             $table->softDeletes();
             $table->timestamps();
         });

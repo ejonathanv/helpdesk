@@ -6,12 +6,12 @@ use Mail;
 use App\Models\User;
 use Inertia\Inertia;
 use App\Models\Agent;
-use App\Mail\WelcomeMail;
 use App\Models\Department;
 use App\Models\Permission;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Models\UserPermission;
+use App\Providers\UsuarioCreado;
 use App\Mail\PasswordChangedMail;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\StoreAgentRequest;
@@ -96,7 +96,7 @@ class AgentController extends Controller
         $permissions->permission_id = $request->permissions;
         $permissions->save();
 
-        Mail::to($request->email)->send(new WelcomeMail($request->name, $request->email, $password));
+        event(new UsuarioCreado($user, $password));
 
         return redirect()
             ->route('agents.show', $agent)

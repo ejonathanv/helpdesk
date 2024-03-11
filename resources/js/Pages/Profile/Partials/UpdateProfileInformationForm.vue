@@ -25,7 +25,9 @@ const form = useForm({
 <template>
     <section>
         <header>
-            <h2 class="text-lg font-medium text-gray-900">Información personal</h2>
+            <h2 class="text-lg font-medium text-gray-900">
+                Información personal | {{ user.permission_name }}
+            </h2>
 
             <p class="mt-1 text-sm text-gray-600">
                 Actualiza tu información personal.

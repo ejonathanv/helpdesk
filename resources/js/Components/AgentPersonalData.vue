@@ -8,7 +8,7 @@
                     </h2>
 
                     <p class="mt-1 text-sm text-gray-600">
-                        Aquí puedes ver los datos personales del ingeniero.
+                        Aquí puedes ver los datos personales del usuario.
                     </p>
                 </header>
             </div>

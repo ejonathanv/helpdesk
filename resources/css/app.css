@@ -1,108 +1,89 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-
-h1{
-    @apply text-3xl font-bold;
-
+[v-cloak] {
+    display: none;
 }
-h2{
+h1 {
+    @apply text-3xl font-bold;
+}
+h2 {
     @apply text-2xl font-bold;
 }
-h3{
+h3 {
     @apply text-xl font-bold;
 }
-h4{
+h4 {
     @apply text-lg font-bold;
 }
-h5{
+h5 {
     @apply text-base font-bold;
 }
-h6{
+h6 {
     @apply text-sm font-bold;
 }
-.container{
+.container {
     @apply max-w-7xl mx-auto sm:px-6 lg:px-8;
 }
-
-.card{
+.card {
     @apply p-4 sm:p-8 bg-white shadow sm:rounded-lg;
 }
-
-.table{
+.table {
     @apply text-left w-full border-collapse;
 }
 .table thead tr th,
-.table tbody tr td{
+.table tbody tr td {
     @apply py-2;
 }
-
-.table thead tr th{
+.table thead tr th {
     @apply text-sm font-semibold uppercase;
 }
-
 .table.bordered thead tr th,
-.table.bordered tbody tr td{
+.table.bordered tbody tr td {
     @apply border-b border-gray-300 px-2 text-sm;
 }
-.table.bordered tbody tr:last-child td{
+.table.bordered tbody tr:last-child td {
     @apply border-0;
 }
-
-.form-control{
+.form-control {
     @apply border-gray-300 focus:border-dynacom-red focus:ring-dynacom-red rounded-md shadow-sm w-full;
 }
-
-.badge{
+.badge {
     @apply inline-block px-2 py-1 text-xs font-bold leading-none rounded-full text-white;
 }
-
-.badge.badge-primary{
+.badge.badge-primary {
     @apply bg-blue-500 text-white;
 }
-
-.badge.badge-success{
+.badge.badge-success {
     @apply bg-green-500 text-white;
 }
-
-.badge.badge-warning{
+.badge.badge-warning {
     @apply bg-yellow-500 text-white;
 }
-
-.badge.badge-danger{
+.badge.badge-danger {
     @apply bg-red-500 text-white;
 }
-
-.badge.badge-info{
+.badge.badge-info {
     @apply bg-blue-500 text-white;
 }
-
-.badge.badge-light{
+.badge.badge-light {
     @apply bg-gray-500 text-white;
 }
-
-.badge.badge-dark{
+.badge.badge-dark {
     @apply bg-gray-800 text-white;
 }
-
-.badge.badge-secondary{
+.badge.badge-secondary {
     @apply bg-gray-500 text-white;
 }
-
-
-.modal{
+.modal {
     @apply fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-900 bg-opacity-25 overflow-y-auto;
 }
-
-.modalBody{
+.modalBody {
     @apply p-4 sm:p-8 bg-white shadow sm:rounded-lg w-full max-w-4xl mx-auto;
 }
-
-.modal.sm .modalBody{
-    @apply max-w-xl
+.modal.sm .modalBody {
+    @apply max-w-xl;
 }
-
-.flashMsg{
+.flashMsg {
     @apply text-sm text-green-500 mb-6 font-bold;
 }

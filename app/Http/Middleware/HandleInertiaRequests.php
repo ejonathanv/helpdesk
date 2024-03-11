@@ -34,6 +34,15 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'unread_notifications_count' => $request->user() ? $request->user()->unreadNotifications()->count() : 0,
+                // Necesitamos revisar si un usuario guest esta en session
+                'guest' => [
+                    'type' => session('type'),
+                    'id' => session('contact_id'),
+                    'name' => session('contact_name'),
+                    'email' => session('contact_email'),
+                    'accounts' => session('contact_accounts'),
+                ]
             ],
             'flash' => [
                 'ticketDetails' => fn () => $request->session()->get('ticketDetails'),

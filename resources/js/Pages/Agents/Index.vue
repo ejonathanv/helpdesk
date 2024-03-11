@@ -2,7 +2,7 @@
     <Head title="Ingenieros" />
     <AuthenticatedLayout>
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Ingenieros</h2>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Usuarios</h2>
         </template>
         <div class="container py-7">
             <div class="card">

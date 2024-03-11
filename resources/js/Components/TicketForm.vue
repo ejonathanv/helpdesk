@@ -93,6 +93,10 @@ import InputError from "@/Components/InputError.vue";
 export default {
     name: "NewTicket",
     props: {
+        type: {
+            type: String,
+            default: "internal"
+        },
         accounts: {
             type: Array,
             required: true,
@@ -119,7 +123,14 @@ export default {
     },
     methods: {
         submit() {
-            let route = "/dashboard/tickets";
+
+            let route = null;
+
+            if (this.type === "internal") {
+                route = "/dashboard/tickets";
+            } else if (this.type === "guest") {
+                route = "/guest/new-ticket";
+            }
 
             this.submiting = true;
             

@@ -10,7 +10,7 @@ class Agent extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $appends = ['status_name'];
+    protected $appends = ['status_name', 'name', 'email'];
 
     public function user()
     {
@@ -36,5 +36,15 @@ class Agent extends Model
             default:
                 return 'Desconocido';
         }
+    }
+
+    public function getNameAttribute()
+    {
+        return $this->user->name;
+    }
+
+    public function getEmailAttribute()
+    {
+        return $this->user->email;
     }
 }

@@ -3,7 +3,7 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Nuevo ingeniero
+                Nuevo usuario
             </h2>
         </template>
         <div class="container py-7">
@@ -12,11 +12,11 @@
                 <div class="w-6/12">
                     <header>
                         <h2 class="text-lg font-medium text-gray-900">
-                            Crear nuevo ingeniero
+                            Crear nuevo usuario
                         </h2>
 
                         <p class="mt-1 text-sm text-gray-600">
-                            Ingresa los datos del nuevo ingeniero.
+                            Ingresa los datos del nuevo usuario
                         </p>
                     </header>
                     <form action="" class="space-y-6 mt-7" @submit.prevent="submit">

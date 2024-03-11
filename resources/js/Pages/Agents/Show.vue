@@ -3,7 +3,7 @@
     <AuthenticatedLayout>
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Información del ingeniero
+                Información del usuario
             </h2>
         </template>
         <div class="container py-7 space-y-6">

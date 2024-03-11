@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('ticket_attachments', function (Blueprint $table) {
             $table->id();
             $table->integer('ticket_id');
+            $table->string('name');
             $table->string('file_name');
             $table->string('file_path');
             $table->timestamps();

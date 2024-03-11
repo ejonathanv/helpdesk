@@ -5,13 +5,11 @@
                 <h2 class="text-lg font-medium text-gray-900">
                     Crear nuevo departamento
                 </h2>
-
                 <p class="mt-1 text-sm text-gray-600">
                     Llena los siguientes campos para crear un nuevo departamento.
                 </p>
             </header>
         </div>
-
         <form action="" class="space-y-6" @submit.prevent="submit">
             <div>
                 <InputLabel for="name" value="Nombre" />
@@ -26,7 +24,6 @@
                 />
                 <InputError class="mt-2" :message="$page.props.errors.name" />
             </div>
-
             <div>
                 <InputLabel for="description" value="Descripción" />
                 <TextInput
@@ -37,7 +34,6 @@
                 />
                 <InputError class="mt-2" :message="$page.props.errors.description" />
             </div>
-
             <div>
                 <PrimaryButton :submiting="submiting">
                     <span v-if="submiting" class="flex items-center space-x-2">
@@ -54,13 +50,11 @@
         </form>
     </div>
 </template>
-
 <script>
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
-
 export default {
     name: "NewDepartment",
     components: {
@@ -82,9 +76,7 @@ export default {
         submit(){
             const t = this;
             const route = '/dashboard/config/departments';
-
             t.submiting = true;
-
             t.$inertia.post(route, t.form, {
                 preserveScroll: true,
                 onSuccess: () => {

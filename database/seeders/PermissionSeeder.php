@@ -14,7 +14,7 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         Permission::factory()->create([
-            'name' => 'Administrator',
+            'name' => 'Administrador',
             'description' => 'Puede hacer todo en el sistema',
         ]);
 

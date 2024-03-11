@@ -25,7 +25,7 @@
                     Aquí puedes ver los eventos del ticket.
                 </p>
             </header>
-            <div>
+            <div v-if="user">
                 <PrimaryButton @click.prevent="showModal = true">
                     <i class="fas fa-plus mr-2"></i>
                     <span>Agregar evento</span>
@@ -39,15 +39,11 @@
                 <thead>
                     <tr>
                         <th width="40%">Evento</th>
-                        <th class="text-center" width="20%">Visibilidad</th>
-                        <th class="text-center" width="20%">Tipo</th>
-                        <th class="text-center" width="20%">
-                            Tiempo invertido
-                        </th>
-                        <th>Adjuntos</th>
-                        <th class="text-center">
-                            <span>Acciones</span>
-                        </th>
+                        <th class="text-center" width="20%" v-if="user">Visibilidad</th>
+                        <th class="text-center" width="20%" v-if="user">Tipo</th>
+                        <th class="text-center" width="20%">Tiempo invertido</th>
+                        <th v-if="user">Adjuntos</th>
+                        <th class="text-center" v-if="user"><span>Acciones</span></th>
                     </tr>
                 </thead>
 
@@ -66,15 +62,10 @@
                                 {{ event.created_at }}
                             </p>
                         </td>
-                        <td
-                            class="text-center"
-                            v-html="event.public_as_badge"
-                        ></td>
-                        <td class="text-center" v-html="event.type_badge"></td>
-                        <td class="text-center">
-                            {{ event.total_time_formatted }}
-                        </td>
-                        <td>
+                        <td class="text-center" v-if="user" v-html="event.public_as_badge"></td>
+                        <td class="text-center" v-if="user" v-html="event.type_badge"></td>
+                        <td class="text-center">{{ event.total_time_formatted }}</td>
+                        <td v-if="user">
                             <div class="flex items-center justify-center flex-no-wrap space-x-2" v-if="event.attachments.length">
                                 <a class="text-gray-600 text-2xl"
                                     v-for="attachment in event.attachments"
@@ -96,7 +87,7 @@
                                 </p>
                             </div>  
                         </td>
-                        <td class="text-center">
+                        <td class="text-center" v-if="user">
                             <form action="" @submit.prevent="deleteEvent(event.id)">
                                 <button type="submit">
                                     <i class="fas fa-trash-alt text-red-500"></i>
@@ -115,163 +106,165 @@
             </p>
         </div>
 
-        <!-- Modal para crear un nuevo evento -->
-        <div class="modal sm" v-if="showModal">
-            <div class="modalBody overflow-hidden">
-                <div class="flex items-center justify-between mb-7">
-                    <header>
-                        <h2 class="text-lg font-medium text-gray-900">
-                            Crear nuevo evento
-                        </h2>
+        <template v-if="user">
+            <!-- Modal para crear un nuevo evento -->
+            <div class="modal sm" v-if="showModal">
+                <div class="modalBody overflow-hidden">
+                    <div class="flex items-center justify-between mb-7">
+                        <header>
+                            <h2 class="text-lg font-medium text-gray-900">
+                                Crear nuevo evento
+                            </h2>
 
-                        <p class="mt-1 text-sm text-gray-600">
-                            En esta sección puedes crear un nuevo evento para el
-                            ticket.
-                        </p>
-                    </header>
+                            <p class="mt-1 text-sm text-gray-600">
+                                En esta sección puedes crear un nuevo evento para el
+                                ticket.
+                            </p>
+                        </header>
 
-                    <a href="#" @click.prevent="toggleModal">
-                        <i
-                            class="fas fa-times fa-lg text-gray-600 hover:text-gray-700"
-                        ></i>
-                    </a>
+                        <a href="#" @click.prevent="toggleModal">
+                            <i
+                                class="fas fa-times fa-lg text-gray-600 hover:text-gray-700"
+                            ></i>
+                        </a>
+                    </div>
+
+                    <form
+                        action=""
+                        class="space-y-4"
+                        @submit.prevent="submit"
+                        enctype="multipart/form-data"
+                    >
+                        <h5 class="font-bold text-dynacom-red">
+                            Comentarios ó descripción del evento
+                        </h5>
+                        <div>
+                            <InputLabel for="event" value="Comentarios" />
+                            <textarea
+                                name="comments"
+                                id="event"
+                                cols="30"
+                                rows="3"
+                                class="form-control"
+                                v-model="form.comments"
+                                placeholder="Escribe tus comentariós o descripción sobre este evento"
+                                required
+                            ></textarea>
+                        </div>
+
+                        <h5 class="font-bold text-dynacom-red">Tiempo invertido</h5>
+                        <div class="flex items-start space-x-4">
+                            <div class="w-1/3">
+                                <InputLabel for="days" value="Días" />
+                                <TextInput
+                                    type="number"
+                                    name="days"
+                                    id="days"
+                                    class="form-control"
+                                    placeholder="0"
+                                    v-model="form.days"
+                                    required
+                                    min="0"
+                                >
+                                </TextInput>
+                            </div>
+
+                            <div class="w-1/3">
+                                <InputLabel for="hours" value="Horas" />
+                                <TextInput
+                                    type="number"
+                                    name="hours"
+                                    id="hours"
+                                    class="form-control"
+                                    placeholder="0"
+                                    v-model="form.hours"
+                                    required
+                                    min="0"
+                                >
+                                </TextInput>
+                            </div>
+
+                            <div class="w-1/3">
+                                <InputLabel for="minutes" value="Minutos" />
+                                <TextInput
+                                    type="number"
+                                    name="minutes"
+                                    id="minutes"
+                                    class="form-control"
+                                    placeholder="0"
+                                    v-model="form.minutes"
+                                    required
+                                    min="0"
+                                >
+                                </TextInput>
+                            </div>
+                        </div>
+
+                        <h5 class="font-bold text-dynacom-red">Atención</h5>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="w-1/2">
+                                <InputLabel for="type" value="Tipo de atención" />
+                                <select
+                                    name="type"
+                                    id="type"
+                                    class="form-control"
+                                    v-model="form.type"
+                                    required
+                                >
+                                    <option value="remote">Atención remota</option>
+                                    <option value="on-site">
+                                        Atención en sitio
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="w-1/2">
+                                <InputLabel for="publicAs" value="Publicar como" />
+                                <select
+                                    name="publicAs"
+                                    id="publicAs"
+                                    class="form-control"
+                                    v-model="form.publicAs"
+                                    required
+                                >
+                                    <option value="public">Público</option>
+                                    <option value="private">Privado</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <h5 class="font-bold text-dynacom-red">
+                            Archivos adjuntos
+                        </h5>
+
+                        <div>
+                            <InputLabel for="files" value="Archivos" />
+                            <input
+                                type="file"
+                                name="files"
+                                id="files"
+                                multiple
+                                ref="files"
+                                @change="handleFileUpload"
+                            />
+                        </div>
+
+                        <div class="pt-6">
+                            <PrimaryButton type="submit">
+                                <span
+                                    v-if="submiting"
+                                    class="flex items-center space-x-2"
+                                >
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                    <span> Un momento... </span>
+                                </span>
+                                <span v-else>Publicar evento</span>
+                            </PrimaryButton>
+                        </div>
+                    </form>
                 </div>
-
-                <form
-                    action=""
-                    class="space-y-4"
-                    @submit.prevent="submit"
-                    enctype="multipart/form-data"
-                >
-                    <h5 class="font-bold text-dynacom-red">
-                        Comentarios ó descripción del evento
-                    </h5>
-                    <div>
-                        <InputLabel for="event" value="Comentarios" />
-                        <textarea
-                            name="comments"
-                            id="event"
-                            cols="30"
-                            rows="3"
-                            class="form-control"
-                            v-model="form.comments"
-                            placeholder="Escribe tus comentariós o descripción sobre este evento"
-                            required
-                        ></textarea>
-                    </div>
-
-                    <h5 class="font-bold text-dynacom-red">Tiempo invertido</h5>
-                    <div class="flex items-start space-x-4">
-                        <div class="w-1/3">
-                            <InputLabel for="days" value="Días" />
-                            <TextInput
-                                type="number"
-                                name="days"
-                                id="days"
-                                class="form-control"
-                                placeholder="0"
-                                v-model="form.days"
-                                required
-                                min="0"
-                            >
-                            </TextInput>
-                        </div>
-
-                        <div class="w-1/3">
-                            <InputLabel for="hours" value="Horas" />
-                            <TextInput
-                                type="number"
-                                name="hours"
-                                id="hours"
-                                class="form-control"
-                                placeholder="0"
-                                v-model="form.hours"
-                                required
-                                min="0"
-                            >
-                            </TextInput>
-                        </div>
-
-                        <div class="w-1/3">
-                            <InputLabel for="minutes" value="Minutos" />
-                            <TextInput
-                                type="number"
-                                name="minutes"
-                                id="minutes"
-                                class="form-control"
-                                placeholder="0"
-                                v-model="form.minutes"
-                                required
-                                min="0"
-                            >
-                            </TextInput>
-                        </div>
-                    </div>
-
-                    <h5 class="font-bold text-dynacom-red">Atención</h5>
-
-                    <div class="flex items-start space-x-4">
-                        <div class="w-1/2">
-                            <InputLabel for="type" value="Tipo de atención" />
-                            <select
-                                name="type"
-                                id="type"
-                                class="form-control"
-                                v-model="form.type"
-                                required
-                            >
-                                <option value="remote">Atención remota</option>
-                                <option value="on-site">
-                                    Atención en sitio
-                                </option>
-                            </select>
-                        </div>
-                        <div class="w-1/2">
-                            <InputLabel for="publicAs" value="Publicar como" />
-                            <select
-                                name="publicAs"
-                                id="publicAs"
-                                class="form-control"
-                                v-model="form.publicAs"
-                                required
-                            >
-                                <option value="public">Público</option>
-                                <option value="private">Privado</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <h5 class="font-bold text-dynacom-red">
-                        Archivos adjuntos
-                    </h5>
-
-                    <div>
-                        <InputLabel for="files" value="Archivos" />
-                        <input
-                            type="file"
-                            name="files"
-                            id="files"
-                            multiple
-                            ref="files"
-                            @change="handleFileUpload"
-                        />
-                    </div>
-
-                    <div class="pt-6">
-                        <PrimaryButton type="submit">
-                            <span
-                                v-if="submiting"
-                                class="flex items-center space-x-2"
-                            >
-                                <i class="fas fa-spinner fa-spin"></i>
-                                <span> Un momento... </span>
-                            </span>
-                            <span v-else>Publicar evento</span>
-                        </PrimaryButton>
-                    </div>
-                </form>
             </div>
-        </div>
+        </template>
     </div>
 </template>
 
@@ -299,6 +292,7 @@ export default {
     },
     data() {
         return {
+            user: this.$page.props.auth.user,
             submiting: false,
             showModal: false,
             form: {

@@ -41,7 +41,8 @@
             </div>
             <div class="w-10/12">
                 <TicketDetails v-if="currentTab === 'details'" 
-                    :ticket="ticket" 
+                    :ticket="ticket"
+                    :attachments="attachments"
                     :agents="agents"
                     :account="account"
                     :contacts="contacts"

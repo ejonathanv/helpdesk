@@ -44,6 +44,21 @@ const showingNavigationDropdown = ref(false);
                             </div>
                         </div>
 
+                        <div class="flex ml-auto">
+                            <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                                <NavLink :href="route('notifications.index')" class="flex items-center space-x-2">
+                                    <span 
+                                        v-if="$page.props.auth.unread_notifications_count > 0"
+                                        class="bg-dynacom-red text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold"
+                                        v-text="$page.props.auth.unread_notifications_count">
+                                    </span>
+                                    <span>
+                                        Notificaciones
+                                    </span>
+                                </NavLink>
+                            </div>
+                        </div>
+
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <!-- Settings Dropdown -->
                             <div class="ms-3 relative">
@@ -74,7 +89,7 @@ const showingNavigationDropdown = ref(false);
 
                                     <template #content>
                                         <DropdownLink :href="route('profile.edit')"> Mi cuenta </DropdownLink>
-                                        <DropdownLink :href="route('agents.index')"> Ingenieros </DropdownLink>
+                                        <DropdownLink :href="route('agents.index')"> Usuarios </DropdownLink>
                                         <DropdownLink :href="route('departments.index')"> Departamentos </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Cerrar sesión

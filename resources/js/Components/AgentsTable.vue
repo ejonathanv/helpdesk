@@ -2,14 +2,14 @@
     <!-- Encabezado de la tabla -->
     <div class="flex items-center justify-between mb-7">
         <header>
-            <h2 class="text-lg font-medium text-gray-900">Lista de ingenieros</h2>
+            <h2 class="text-lg font-medium text-gray-900">Lista de usuarios</h2>
 
             <p class="mt-1 text-sm text-gray-600">
-                En esta lista puedes ver todos los ingenieros registrados.
+                En esta lista puedes ver todos los usuarios registrados.
             </p>
         </header>
         <PrimaryLink :href="route('agents.create')">
-            Crear nuevo ingeniero
+            Crear nuevo usuario
         </PrimaryLink>
     </div>
 

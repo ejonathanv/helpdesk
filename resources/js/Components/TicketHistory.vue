@@ -20,13 +20,24 @@
                             <p class="font-bold text-sm">
                                 {{ history.description }}
                             </p>
+                            
+                            <template v-if="history.user">
+                                <p class="text-gray-400 text-xs font-bold">
+                                    Por: {{ history.user.name }}
+                                </p>
+                                <p class="text-gray-400 text-xs font-bold">
+                                    Fecha: {{ history.created_at }}
+                                </p>
+                            </template>
 
-                            <p class="text-gray-400 text-xs font-bold">
-                                Por: {{ history.user.name }}
-                            </p>
-                            <p class="text-gray-400 text-xs font-bold">
-                                Fecha: {{ history.created_at }}
-                            </p>
+                            <template v-else>
+                                <p class="text-gray-400 text-xs font-bold">
+                                    Por: {{ history.contact_name }}
+                                </p>
+                                <p class="text-gray-400 text-xs font-bold">
+                                    Fecha: {{ history.created_at }}
+                                </p>
+                            </template>
 
                         </td>
                     </tr>

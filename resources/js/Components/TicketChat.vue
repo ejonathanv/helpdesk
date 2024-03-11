@@ -7,7 +7,12 @@
                 </h2>
 
                 <p class="mt-1 text-sm text-gray-600">
-                    Aquí puedes ver la conversación con el cliente.
+                    <span v-if="type === 'internal'">
+                        Aquí puedes ver la conversación con el cliente.
+                    </span>
+                    <span v-else>
+                        Aquí puedes ver la conversación con el ingeniero asignado.
+                    </span>
                 </p>
             </header>
         </div>
@@ -45,6 +50,10 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 export default {
     name: "TicketChat",
     props: {
+        type: {
+            type: String,
+            default: "internal",
+        },
         ticket: {
             type: Object,
             required: true,
@@ -65,16 +74,16 @@ export default {
     methods: {
         submit() {
             let t = this;
-            let route = "/dashboard/tickets/" + t.ticket.id + "/messages";
+            let route = t.getRoute();
             let data = {
                 message: t.message,
+                type: t.type,
             };
 
             t.$inertia.post(route, data, {
                 preserveScroll: true,
                 preserveState: true,
                 onSuccess: () => {
-                    console.log("Message sent");
                     // Necesitamos actualizar el chat con la función getChat() del componente padre
                     t.$emit("update");
                     t.message = "";
@@ -87,6 +96,16 @@ export default {
                 },
             });
         },
+        getRoute(){
+            let t = this;
+            if(t.type == 'internal'){
+                let route = "/dashboard/tickets/" + t.ticket.id + "/messages";
+                return route;
+            }else{
+                let route = "/guest/tickets/" + t.ticket.id + "/messages";
+                return route;
+            }
+        }
     }
 };
 </script>

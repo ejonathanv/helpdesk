@@ -44,6 +44,10 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    protected $appends = [
+        'permission_name'
+    ];
+
     public function sendPasswordResetNotification($token): void
     {
         $url = route('password.reset', $token);
@@ -54,5 +58,10 @@ class User extends Authenticatable
     public function permission()
     {
         return $this->hasOne(UserPermission::class);
+    }
+
+    public function getPermissionNameAttribute()
+    {
+        return $this->permission->permission->name;
     }
 }

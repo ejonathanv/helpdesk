@@ -5,13 +5,12 @@
                 <h2 class="text-lg font-medium text-gray-900">
                     Detalles del ticket
                 </h2>
-
                 <p class="mt-1 text-sm text-gray-600">
                     Aquí puedes ver los detalles del ticket.
                 </p>
             </header>
         </div>
-        <table class="table mb-7">
+        <table class="table" :class="type === 'internal' ? 'mb-7' : ''">
             <tbody>
                 <tr>
                     <th>Fecha de creación:</th>
@@ -47,7 +46,7 @@
                         <span class="text-gray-600">{{ ticket.content }}</span>
                     </td>
                 </tr>
-                <tr>
+                <tr v-if="type === 'internal'">
                     <th>Categoría</th>
                     <td>
                         <a
@@ -59,7 +58,7 @@
                         </a>
                     </td>
                 </tr>
-                <tr>
+                <tr v-if="type === 'internal'">
                     <th>Status:</th>
                     <td>
                         <select
@@ -74,15 +73,26 @@
                             <option value="4">En espera de cliente</option>
                             <option value="5">Monitoreo</option>
                             <option value="6">Cerrado</option>
+                            <option value="7">Cancelado</option>
                         </select>
-
-                        <!-- We need to display the updateTicketDetails error -->
                         <div v-if="$page.props.errors.updateTicketDetails" class="text-dynacom-red text-sm">
                             {{ $page.props.errors.updateTicketDetails.status_id }}
                         </div>
                     </td>
                 </tr>
-                <tr>
+                <tr v-if="type === 'guest'">
+                    <th style="vertical-align: top;">Status:</th>
+                    <td style="vertical-align: top;">
+                        <span class="text-gray-600">{{ ticket.status }}</span>
+                        <p class="text-gray-600 mt-1 text-xs" v-if="ticket.cancellation_reason">
+                            <span class="font-bold">Motivo de cancelación:</span> <br />
+                            <span class="text-gray-600">{{
+                                ticket.cancellation_reason
+                            }}</span>
+                        </p>
+                    </td>
+                </tr>
+                <tr v-if="type === 'internal'">
                     <th>Prioridad:</th>
                     <td>
                         <select
@@ -99,14 +109,13 @@
                             <option value="3">Alta</option>
                             <option value="4">Urgente</option>
                         </select>
-
                         <!-- We need to display the updateTicketDetails error -->
                         <div v-if="$page.props.errors.updateTicketDetails" class="text-dynacom-red text-sm">
                             {{ $page.props.errors.updateTicketDetails.priority_id }}
                         </div>
                     </td>
                 </tr>
-                <tr>
+                <tr v-if="type === 'internal'">
                     <th>Severidad:</th>
                     <td>
                         <select
@@ -129,39 +138,66 @@
                         </div>
                     </td>
                 </tr>
+                    <th>
+                        Archivos adjuntos:
+                    </th>
+                    <td>
+                        <div v-if="attachments">
+                            <div v-for="attachment in attachments" :key="attachment.id"
+                            class="flex items-center space-x-2">
+                                <a :href="attachment.url"
+                                    target="_blank"
+                                    class="text-dynacom-red hover:underline">
+                                    {{ attachment.name }}
+                                </a>
+                                <form action="">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="text-dynacom-red hover:underline">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div v-else>
+                            <span class="text-gray-600">
+                                No hay archivos adjuntos
+                            </span>
+                        </div>
+                    </td>
+                <tr>
+
+                </tr>
             </tbody>
         </table>
-
-        <div v-if="$page.props.flash.ticketDetails" class="alert">
-            <p class="flashMsg">
-            {{ $page.props.flash.ticketDetails }}
-            </p> 
-        </div>
-
-        <PrimaryButton type="submit" @click.prevent="update">
-            <span v-if="submiting" class="flex items-center space-x-2">
-                <i class="fas fa-spinner fa-spin"></i>
-                <span>
-                    Un momento...
+        <div v-if="type === 'internal'">
+            <div v-if="$page.props.flash.ticketDetails" class="alert">
+                <p class="flashMsg">
+                {{ $page.props.flash.ticketDetails }}
+                </p> 
+            </div>
+            <PrimaryButton type="submit" @click.prevent="update">
+                <span v-if="submiting" class="flex items-center space-x-2">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <span>
+                        Un momento...
+                    </span>
                 </span>
-            </span>
-            <span v-else>Actualizar</span>
-        </PrimaryButton>
-
-        <TicketCategoryModal
-            v-if="showCategoryModal"
-            :ticket="ticket"
-            :categories="categories"
-            @close="showCategoryModal = false"
-        >
-        </TicketCategoryModal>
+                <span v-else>Actualizar</span>
+            </PrimaryButton>
+            <TicketCategoryModal
+                v-if="showCategoryModal"
+                :ticket="ticket"
+                :categories="categories"
+                @close="showCategoryModal = false"
+            >
+            </TicketCategoryModal>
+        </div>
     </div>
 </template>
-
 <script>
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TicketCategoryModal from "@/Components/TicketCategoryModal.vue";
-
 export default {
     name: "TicketUpdateDetails",
     components: {
@@ -169,9 +205,17 @@ export default {
         TicketCategoryModal,
     },
     props: {
+        type: {
+            type: String,
+            default: "internal",
+        },
         ticket: {
             type: Object,
             required: true,
+        },
+        attachments: {
+            type: Array,
+            required: false,
         },
         categories: {
             type: Array,

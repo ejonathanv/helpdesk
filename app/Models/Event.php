@@ -18,15 +18,22 @@ class Event extends Model
         'updated_at' => 'datetime:d M, Y h:i a',
     ];
 
-    public function user(){
+    public function ticket(){
+        return $this->belongsTo(Ticket::class);
+    }
+
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function attachments(){
+    public function attachments()
+    {
         return $this->hasMany(EventAttachment::class);
     }
 
-    public function getByAttribute(){
+    public function getByAttribute()
+    {
         return $this->user ? $this->user->name : 'Sin usuario';
     }
 
@@ -47,7 +54,8 @@ class Event extends Model
         return $days . $hours . $minutes;
     }
 
-    public function getPublicAsBadgeAttribute(){
+    public function getPublicAsBadgeAttribute()
+    {
         switch ($this->publicAs) {
             case 'public':
                 return '<span class="badge badge-success">Público</span>';
@@ -56,7 +64,8 @@ class Event extends Model
         }
     }
 
-    public function getTypeBadgeAttribute(){
+    public function getTypeBadgeAttribute()
+    {
         switch ($this->type) {
             case 'remote':
                 return '<span class="badge badge-danger">Remoto</span>';

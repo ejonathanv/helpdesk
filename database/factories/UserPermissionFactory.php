@@ -19,7 +19,7 @@ class UserPermissionFactory extends Factory
     public function definition(): array
     {
 
-        $permission = Permission::inRandomOrder()->first();
+        $permission = Permission::inRandomOrder()->where('name', '<>', 'Administrador')->first();
 
         return [
             'user_id' => User::factory(),
