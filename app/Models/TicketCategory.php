@@ -9,6 +9,8 @@ class TicketCategory extends Model
 {
     use HasFactory;
 
+    public $appends = ['full_name'];
+
     public function childrens()
     {
         return $this->hasMany(TicketCategory::class, 'parent_id');

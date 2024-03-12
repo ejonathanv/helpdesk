@@ -69,5 +69,6 @@ class Kernel extends HttpKernel
         'guest-auth' => \App\Http\Middleware\GuestAuthMiddleware::class,
         'prevent-guest-login' => \App\Http\Middleware\PreventGuestLoginMiddleware::class,
         'prevent-user-login' => \App\Http\Middleware\PreventUserLoginMiddleware::class,
+        'guest-ticket' => \App\Http\Middleware\GuestTicket::class,
     ];
 }

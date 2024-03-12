@@ -55,16 +55,33 @@
             </span>
             <span v-else>Actualizar</span>
         </PrimaryButton>
+
+        <div v-if="ticket.contact_name">
+            <hr class="my-5" />
+
+            <p class="text-sm text-gray-600 mb-4">
+                <b>¿El contacto no recuerda su contraseña?</b> Haz clic en el siguiente enlace para enviarle un correo electrónico con sus credenciales.
+            </p>
+
+            <form action="">
+                <SecondaryButton type="submit" class="space-x-2">
+                    <i class="fas fa-key"></i>
+                    <span>Enviar credenciales</span>
+                </SecondaryButton>
+            </form>
+        </div>
     </div>
 </template>
 
 <script>
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 
 export default {
     name: "TicketUpdateContact",
     components: {
         PrimaryButton,
+        SecondaryButton,
     },
     props: {
         ticket: {

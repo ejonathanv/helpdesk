@@ -1,7 +1,7 @@
 <x-mail::message>
 # Hola {{ $ticket->contact_name }},
 
-El estado del ticket #{{ $ticket->number }} ha sido modificado a "{{ $ticket->status }}".
+Tu ticket #{{ $ticket->number }} ha sido asignado al ingeniero {{ $ticket->agent->name }}. Puedes ver el ticket en el siguiente enlace:
 
 <x-mail::button :url="route('guest.ticket', $ticket)">
     Ver ticket

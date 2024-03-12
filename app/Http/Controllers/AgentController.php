@@ -242,7 +242,7 @@ class AgentController extends Controller
      */
     public function destroy(Agent $agent)
     {
-        $tickets = $agent->tickets;
+        $tickets = $agent->tickets()->withTrashed()->get();
         foreach($tickets as $ticket){
             $ticket->agent_id = "";
             $ticket->save();

@@ -34,7 +34,12 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     });
     // La primer ruta debe ser dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    // Listado de cuentas
+    Route::get('/accounts-list', [DashboardController::class, 'accounts'])->name('accounts-list');
     Route::resource('tickets', TicketController::class);
+    // Tickets archivados
+    Route::get('tickets-archived', [TicketController::class, 'archived'])->name('tickets.archived');
+    Route::post('restore-ticket/{ticket}', [TicketController::class, 'restore'])->name('tickets.restore');
     // Detalles generales
     Route::get('get-subcategories/{parent}', [TicketCategoryController::class, 'subcategories'])->name('get-subcategories');
     Route::put('tickets/{ticket}/update-category', [TicketController::class, 'update_category'])->name('tickets.update-category');

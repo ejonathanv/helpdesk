@@ -12,8 +12,14 @@ use App\Http\Requests\CancelTicketRequest;
 use App\Http\Requests\StoreGuestTicketRequest;
 class GuestDashboardController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('guest-ticket')->only('ticket', 'chat', 'histories', 'events');
+    }
+
     public function index() {
-        return Inertia::render('Guest/Dashboard');
+        return redirect()->route('guest.tickets');
     }
     public function accounts(){
         $accounts = session()->get('accounts');

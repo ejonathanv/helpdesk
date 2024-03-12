@@ -3,7 +3,7 @@
 
 Se ha registrado un nuevo evento en tu ticket #{{ $ticket->number }}.
 
-<x-mail::button :url="route('tickets.show', $ticket)">
+<x-mail::button :url="route('guest.ticket', $ticket)">
 Ver Ticket
 </x-mail::button>
 

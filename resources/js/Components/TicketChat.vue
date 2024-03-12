@@ -11,40 +11,57 @@
                         Aquí puedes ver la conversación con el cliente.
                     </span>
                     <span v-else>
-                        Aquí puedes ver la conversación con el ingeniero asignado.
+                        Aquí puedes ver la conversación con el ingeniero
+                        asignado.
                     </span>
                 </p>
             </header>
         </div>
 
-        <div class="chatSection" id="chatSection">
-            <div v-for="msg in chat" class="chatMsg">
-                <p class="font-bold text-sm">
-                    {{ msg.from }}:
-                </p>
-                <p class="text-gray-600 mb-2">
-                    {{ msg.message }}
-                </p>
-                <p class="text-gray-400 text-xs font-bold">
-                    {{ msg.created_at }}
-                </p>
+        <div v-if="contactIsAssigned && agentIsAssigned">
+            <div class="chatSection" id="chatSection">
+                <div v-for="msg in chat" class="chatMsg">
+                    <p class="font-bold text-sm">{{ msg.from }}:</p>
+                    <p class="text-gray-600 mb-2">
+                        {{ msg.message }}
+                    </p>
+                    <p class="text-gray-400 text-xs font-bold">
+                        {{ msg.created_at }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="newMsg mt-4">
+                <form
+                    action=""
+                    class="flex items-stretch space-x-2"
+                    @submit.prevent="submit"
+                >
+                    <input
+                        type="text"
+                        class="form-control"
+                        placeholder="Escribe un mensaje..."
+                        required
+                        v-model="message"
+                        ref="messageInput"
+                    />
+                    <PrimaryButton type="submit">
+                        <i class="fas fa-paper-plane mr-2"></i>
+                        <span>Enviar</span>
+                    </PrimaryButton>
+                </form>
             </div>
         </div>
 
-        <div class="newMsg mt-4">
-            <form action="" class="flex items-stretch space-x-2" @submit.prevent="submit">
-                <input type="text" class="form-control" placeholder="Escribe un mensaje..." required v-model="message" ref="messageInput">
-                <PrimaryButton type="submit">
-                    <i class="fas fa-paper-plane mr-2"></i>
-                    <span>Enviar</span>
-                </PrimaryButton>
-            </form>
+        <div v-else>
+            <p class="text-gray-600 font-bold border-l-2 border-dynacom-red p-4">
+                Para iniciar el chat, primero debes asignar un ingeniero y un contacto al ticket.
+            </p>
         </div>
     </div>
 </template>
 
 <script>
-
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 export default {
@@ -61,7 +78,7 @@ export default {
         chat: {
             type: Object,
             required: true,
-        }
+        },
     },
     components: {
         PrimaryButton,
@@ -69,6 +86,8 @@ export default {
     data() {
         return {
             message: "",
+            contactIsAssigned: this.ticket.contact_email,
+            agentIsAssigned: this.ticket.agent_id,
         };
     },
     methods: {
@@ -96,17 +115,17 @@ export default {
                 },
             });
         },
-        getRoute(){
+        getRoute() {
             let t = this;
-            if(t.type == 'internal'){
+            if (t.type == "internal") {
                 let route = "/dashboard/tickets/" + t.ticket.id + "/messages";
                 return route;
-            }else{
+            } else {
                 let route = "/guest/tickets/" + t.ticket.id + "/messages";
                 return route;
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

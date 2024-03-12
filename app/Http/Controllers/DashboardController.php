@@ -11,4 +11,9 @@ class DashboardController extends Controller
     {
         return Inertia::render('Dashboard');
     }
+
+    public function accounts(){
+        $accounts = app(AccountController::class)->list();
+        return response()->json($accounts);
+    }
 }

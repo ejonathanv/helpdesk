@@ -3,12 +3,14 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\Agent;
 use App\Models\Ticket;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use App\Models\TicketCategory;
 use App\Models\TicketAttachment;
 use App\Providers\TicketArchivado;
 use Illuminate\Support\Facades\DB;
 use App\Providers\TicketModificado;
+use App\Providers\DesarchivarTicket;
 use Illuminate\Support\Facades\Mail;
 use App\Providers\AsignacionDeContacto;
 use App\Providers\AsignacionDeIngeniero;
@@ -17,11 +19,69 @@ use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Controllers\AccountController;
 class TicketController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tickets = Ticket::paginate(10);
+        $filterdata = $request->filterdata;
+        $search = $request->search;
+        $departments = Department::orderBy('name', 'ASC')->get();
+        $agents = Agent::with('user')->get()->sortBy('user.name')->values()->all();
+        $categories = TicketCategory::get();
+        $statuses = [
+            ['id' => 1, 'name' => 'Abierto'],
+            ['id' => 2, 'name' => 'Resuelto'],
+            ['id' => 3, 'name' => 'En proceso'],
+            ['id' => 4, 'name' => 'En espera del cliente'],
+            ['id' => 5, 'name' => 'Monitoreo'],
+            ['id' => 6, 'name' => 'Cerrado'],
+            ['id' => 7, 'name' => 'Cancelado'],
+        ];
+        $severities = [
+            ['id' => 1, 'name' => 'Baja'],
+            ['id' => 2, 'name' => 'Media'],
+            ['id' => 3, 'name' => 'Alta'],
+            ['id' => 4, 'name' => 'Urgente'],
+        ];
+        $priorities = [
+            ['id' => 1, 'name' => 'Baja'],
+            ['id' => 2, 'name' => 'Media'],
+            ['id' => 3, 'name' => 'Alta'],
+            ['id' => 4, 'name' => 'Urgente'],
+        ];
+        if($search){
+            $tickets = Ticket::where('id', 'like', '%' . $search . '%')
+                ->orWhere('subject', 'like', '%' . $search . '%')
+                ->orWhere('account_name', 'like', '%' . $search . '%')
+                ->orderBy('id', 'DESC')
+                ->paginate(10);
+        }elseif($filterdata){
+            $tickets = Ticket::when($request->department, function ($query, $department_id) {
+                return $query->where('department_id', $department_id);
+            })->when($request->agent, function ($query, $agent_id) {
+                return $query->where('agent_id', $agent_id);
+            })->when($request->status, function ($query, $status_id) {
+                return $query->where('status_id', $status_id);
+            })->when($request->severity, function ($query, $severity_id) {
+                return $query->where('severity_id', $severity_id);
+            })->when($request->priority, function ($query, $priority_id) {
+                return $query->where('priority_id', $priority_id);
+            })->when($request->account, function ($query, $account_name) {
+                return $query->where('account_name', $account_name);
+            })
+            ->orderBy('id', 'DESC')
+            ->paginate(10)
+            ->withQueryString();
+        }else{
+            $tickets = Ticket::orderBy('id', 'DESC')
+                ->paginate(10);
+        }
         return Inertia::render('Tickets/Index', [
-            'tickets' => $tickets
+            'tickets' => $tickets,
+            'departments' => $departments,
+            'agents' => $agents,
+            'statuses' => $statuses,
+            'severities' => $severities,
+            'priorities' => $priorities,
+            'categories' => $categories,
         ]);
     }
     public function create()
@@ -215,5 +275,71 @@ class TicketController extends Controller
                 ->route('tickets.index')
                 ->with('ticketArchived', 'El ticket ha sido eliminado exitosamente.');
         }
+    }
+    public function archived(Request $request){
+        $filterdata = $request->filterdata;
+        $search = $request->search;
+        $departments = Department::orderBy('name', 'ASC')->get();
+        $agents = Agent::with('user')->get()->sortBy('user.name')->values()->all();
+        $categories = TicketCategory::get();
+        $statuses = [
+            ['id' => 1, 'name' => 'Abierto'],
+            ['id' => 2, 'name' => 'Resuelto'],
+            ['id' => 3, 'name' => 'En proceso'],
+            ['id' => 4, 'name' => 'En espera del cliente'],
+            ['id' => 5, 'name' => 'Monitoreo'],
+            ['id' => 6, 'name' => 'Cerrado'],
+            ['id' => 7, 'name' => 'Cancelado'],
+        ];
+        $severities = [
+            ['id' => 1, 'name' => 'Baja'],
+            ['id' => 2, 'name' => 'Media'],
+            ['id' => 3, 'name' => 'Alta'],
+            ['id' => 4, 'name' => 'Urgente'],
+        ];
+        $priorities = [
+            ['id' => 1, 'name' => 'Baja'],
+            ['id' => 2, 'name' => 'Media'],
+            ['id' => 3, 'name' => 'Alta'],
+            ['id' => 4, 'name' => 'Urgente'],
+        ];
+        if($search){
+            $tickets = Ticket::onlyTrashed()
+                ->where('id', 'like', '%' . $search . '%')
+                ->orWhere('subject', 'like', '%' . $search . '%')
+                ->orWhere('account_name', 'like', '%' . $search . '%')
+                ->paginate(10);
+        }elseif($filterdata){
+            $tickets = Ticket::onlyTrashed()
+            ->when($request->department, function ($query, $department_id) {
+                return $query->where('department_id', $department_id);
+            })->when($request->agent, function ($query, $agent_id) {
+                return $query->where('agent_id', $agent_id);
+            })->when($request->status, function ($query, $status_id) {
+                return $query->where('status_id', $status_id);
+            })->when($request->severity, function ($query, $severity_id) {
+                return $query->where('severity_id', $severity_id);
+            })->when($request->priority, function ($query, $priority_id) {
+                return $query->where('priority_id', $priority_id);
+            })->paginate(10)->withQueryString();
+        }else{
+            $tickets = Ticket::onlyTrashed()->paginate(10);
+        }
+        return Inertia::render('Tickets/Archived', [
+            'tickets' => $tickets,
+            'departments' => $departments,
+            'agents' => $agents,
+            'statuses' => $statuses,
+            'severities' => $severities,
+            'priorities' => $priorities,
+            'categories' => $categories,
+        ]);
+    }
+    public function restore($ticket)
+    {
+        event(new DesarchivarTicket($ticket));
+        return redirect()
+            ->route('tickets.show', $ticket)
+            ->with('ticketRestored', 'El ticket ha sido restaurado exitosamente.');
     }
 }

@@ -12,7 +12,8 @@
                     :statuses="statuses"
                     :severities="severities"
                     :priorities="priorities"
-                    :categories="categories" />
+                    :categories="categories"
+                    :archived="true" />
             </div>
         </div>
     </AuthenticatedLayout>

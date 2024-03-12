@@ -8,7 +8,7 @@ Los detalles del ticket son los siguientes: <br>
 **Número:** #{{ $ticket->number }} <br>
 **Asunto:** {{ $ticket->subject }} <br>
 
-<x-mail::button :url="route('tickets.show', $ticket)">
+<x-mail::button :url="route('guest.ticket', $ticket)">
 Ver ticket
 </x-mail::button>
 

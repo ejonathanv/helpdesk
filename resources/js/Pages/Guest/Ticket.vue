@@ -76,13 +76,6 @@
                     <i class="far fa-fw fa-calendar text-dynacom-red"></i>
                     <span>Eventos</span>
                 </a>
-                <a href="#history"
-                    class="flex items-center space-x-3"
-                    :class="{ active: currentTab === 'history' }"
-                    @click="tab('history')">
-                    <i class="fa fa-fw fa-history text-dynacom-red"></i>
-                    <span>Historial</span>
-                </a>
             </div>
             <div class="w-10/12">
                 <div class="card mb-6" v-if="agent">
@@ -132,12 +125,6 @@
                     :events="events"
                     @update="getEvents"></TicketEvents>
 
-                <TicketHistory
-                    v-if="currentTab === 'history'"
-                    :ticket="ticket"
-                    :histories="histories"
-                    @update="getHistories"
-                />
             </div>
         </div>
     </GuestAuthenticatedLayout>

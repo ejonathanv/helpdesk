@@ -15,49 +15,36 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        // ==============================
         // CREACION DE TICKETS
-        // ==============================
-        // Proceso al asignar a un contacto a un ticket
         AsignacionDeContacto::class => [
             EnviarCorreoDeAsignacion::class,
         ],
-        // Proceso al asignar a un ingeniero a un ticket
         AsignacionDeIngeniero::class => [
             EnviarCorreoDeAsignacionAIngeniero::class,
+            EnviarCorreoAContactoDeAsignacionAIngeniero::class,
         ],
-        // Proceso al modificar un ticket
         TicketModificado::class => [
             NotificarModificacionesAlContacto::class,
         ],
-        // ==============================
         // ARCHIVAR Y ELIMINAR TICKETS
-        // ==============================
-        // Proceso al archivar un ticket
         TicketArchivado::class => [
             EstadoDelTicketArchivado::class,
         ],
-        // ==============================
+        DesarchivarTicket::class => [
+            EstadoDelTicketDesarchivado::class,
+        ],
         // CHAT DEL TICKET
-        // ==============================
-        // Que pasa si se manda un mensaje por chat en un ticket
         MensajeEnChatPorIngeniero::class => [
             NotificarAlContactoPorEmail::class,
         ],
         MensajeEnChatPorContacto::class => [
             NotificarAlIngenieroPorEmail::class,
         ],
-        // ==============================
         // EVENTOS
-        // ==============================
-        // Que sucede al crear un evento en un ticket
         NuevoEventoPublico::class => [
             NotificarDeNuevoEventoAlContacto::class,
         ],
-        // ==============================
         // USUARIOS
-        // ==============================
-        // Que sucede al crear un ingeniero
         UsuarioCreado::class => [
             EnviarDatosDeAccesoAlNuevoUsuario::class,
         ],
