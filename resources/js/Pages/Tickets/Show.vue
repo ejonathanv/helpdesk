@@ -6,7 +6,7 @@
                 Ticket {{ ticket.number }}
             </h2>
         </template>
-        <div class="container py-7 flex items-start space-x-7">
+        <div class="container full py-7 flex items-start space-x-7">
             <div class="w-2/12 flex flex-col space-y-4 sideBarMenu">
                 <a href="#details" class="flex items-center space-x-3" 
                     :class="{ active: currentTab === 'details' }"

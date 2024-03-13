@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('contact_name')->nullable()->default('');
             $table->string('contact_email')->nullable()->default('');
             $table->integer('department_id')->nullable();
-            $table->integer('agent_id')->nullable()->default('');
+            $table->integer('agent_id')->nullable();
             $table->string('subject');
             $table->text('content');
             $table->integer('status_id')->default(1);

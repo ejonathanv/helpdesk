@@ -6,10 +6,8 @@ import DropdownLink from '@/Components/DropdownLink.vue';
 import NavLink from '@/Components/NavLink.vue';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink.vue';
 import { Link } from '@inertiajs/vue3';
-
 const showingNavigationDropdown = ref(false);
 </script>
-
 <template>
     <div>
         <div class="min-h-screen bg-gray-100">
@@ -26,7 +24,6 @@ const showingNavigationDropdown = ref(false);
                                     />
                                 </Link>
                             </div>
-
                             <!-- Navigation Links -->
                             <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
                                 <NavLink :href="route('guest.tickets')" :active="route().current('guest.tickets*')">
@@ -34,7 +31,6 @@ const showingNavigationDropdown = ref(false);
                                 </NavLink>
                             </div>
                         </div>
-
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <!-- Settings Dropdown -->
                             <div class="ms-3 relative">
@@ -61,7 +57,6 @@ const showingNavigationDropdown = ref(false);
                                             </button>
                                         </span>
                                     </template>
-
                                     <template #content>
                                         <DropdownLink :href="route('guest.logout')" method="post" as="button">
                                             Cerrar sesión
@@ -70,7 +65,6 @@ const showingNavigationDropdown = ref(false);
                                 </Dropdown>
                             </div>
                         </div>
-
                         <!-- Hamburger -->
                         <div class="-me-2 flex items-center sm:hidden">
                             <button
@@ -103,7 +97,6 @@ const showingNavigationDropdown = ref(false);
                         </div>
                     </div>
                 </div>
-
                 <!-- Responsive Navigation Menu -->
                 <div
                     :class="{ block: showingNavigationDropdown, hidden: !showingNavigationDropdown }"
@@ -114,7 +107,6 @@ const showingNavigationDropdown = ref(false);
                             Inicio
                         </ResponsiveNavLink>
                     </div>
-
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200">
                         <div class="px-4">
@@ -125,7 +117,6 @@ const showingNavigationDropdown = ref(false);
                                 {{ $page.props.auth.guest.email }}
                             </div>
                         </div>
-
                         <div class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.edit')"> Profile </ResponsiveNavLink>
                             <ResponsiveNavLink :href="route('logout')" method="post" as="button">
@@ -135,14 +126,12 @@ const showingNavigationDropdown = ref(false);
                     </div>
                 </div>
             </nav>
-
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header" />
                 </div>
             </header>
-
             <!-- Page Content -->
             <main>
                 <slot />

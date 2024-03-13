@@ -17,11 +17,11 @@ use App\Http\Controllers\TicketCategoryController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 Route::redirect('/', '/dashboard');
 // Necesitamos crear un grupo de rutas con el prefix dashboard
-Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
+Route::middleware(['auth', 'verified', 'user-account-suspended'])
+    ->prefix('dashboard')
+    ->group(function () {
     // Ruta para notificaciones
-    Route::group([
-        'prefix' => 'notifications',
-    ], function () {
+    Route::group(['prefix' => 'notifications',], function () {
         Route::get('/', [
             NotificationController::class, 'index'
         ])->name('notifications.index');
@@ -32,6 +32,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
             NotificationController::class, 'deleteAllRead'
         ])->name('notifications.delete-all-read');
     });
+
     // La primer ruta debe ser dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     // Listado de cuentas

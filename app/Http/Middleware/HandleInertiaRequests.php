@@ -61,6 +61,7 @@ class HandleInertiaRequests extends Middleware
                 'departmentUpdated' => fn () => $request->session()->get('departmentUpdated'),
                 'departmentDeleted' => fn () => $request->session()->get('departmentDeleted'),
             ],
+            'error' => fn () => $request->session()->get('error'),
             'ziggy' => fn () => [
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
