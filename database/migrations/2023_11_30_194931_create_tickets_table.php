@@ -24,9 +24,9 @@ return new class extends Migration
             $table->string('subject');
             $table->text('content');
             $table->integer('status_id')->default(1);
-            $table->integer('priority_id')->default(1)->default('');
-            $table->integer('category_id')->nullable()->default('');
-            $table->integer('severity_id')->default(1)->default('');
+            $table->integer('priority_id')->default(1);
+            $table->integer('category_id')->nullable();
+            $table->integer('severity_id')->default(1);
             $table->string('cancellation_reason')->nullable()->default('');
             $table->softDeletes();
             $table->timestamps();
