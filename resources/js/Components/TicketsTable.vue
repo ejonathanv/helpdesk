@@ -25,11 +25,7 @@
                     </button>
                 </form>
                 <!-- Botón para crear nuevo ticket -->
-                <PrimaryLink :href="route('tickets.create')" v-if="$page.props.auth.user" class="space-x-2">
-                    <i class="fas fa-plus"></i>
-                    <span>Nuevo ticket</span>
-                </PrimaryLink>
-                <PrimaryLink :href="route('guest.new-ticket')" v-else class="space-x-2">
+                <PrimaryLink :href="route('tickets.create')" class="space-x-2">
                     <i class="fas fa-plus"></i>
                     <span>Nuevo ticket</span>
                 </PrimaryLink>
@@ -41,7 +37,9 @@
                     <span>Filtrar</span>
                 </SecondaryButton>
             </div>
-            <div class="ml-auto space-x-4 flex items-stretch" v-else>
+        </div>
+        <div v-else class="ml-auto">
+            <div class="ml-auto space-x-4 flex items-stretch">
                 <!-- Busqueda de tickets -->
                 <form :action="searchRoute()" method="GET"
                     class="flex items-center space-x-3 relative">
@@ -54,13 +52,11 @@
                         <i class="fas fa-search"></i>
                     </button>
                 </form>
-                <!-- Filtrar tickets -->
-                <SecondaryButton href="#" 
-                    class="space-x-2" 
-                    @click.prevent="filter = !filter">
-                    <i class="fas fa-filter"></i>
-                    <span>Filtrar</span>
-                </SecondaryButton>
+                <!-- Botón para crear nuevo ticket -->
+                <PrimaryLink :href="route('guest.new-ticket')" class="space-x-2">
+                    <i class="fas fa-plus"></i>
+                    <span>Nuevo ticket</span>
+                </PrimaryLink>
             </div>
         </div>
     </div>
@@ -68,6 +64,13 @@
     <div v-if="$page.props.flash.ticketArchived" class="alert">
         <p class="flashMsg">
             {{ $page.props.flash.ticketArchived }}
+        </p>
+    </div>
+
+    <!-- Si el ticket esta cancelado se muestra la siguiente alerta -->
+    <div v-if="$page.props.flash.ticketCancelled" class="alert">
+        <p class="flashMsg !text-red-600">
+            {{ $page.props.flash.ticketCancelled }}
         </p>
     </div>
 
@@ -247,6 +250,8 @@
                         Departamento
                     </th>
                     <th>Etapa</th>
+                    <th>Prioridad</th>
+                    <th>Severidad</th>
                     <th>Fecha</th>
                     <th class="text-right" v-if="!archived">
                         Detalles
@@ -266,6 +271,8 @@
                         {{ ticket.department_name }}
                     </td>
                     <td class="whitespace-nowrap" v-html="ticket.status_badge"></td>
+                    <td class="whitespace-nowrap" v-html="ticket.priority_badge"></td>
+                    <td class="whitespace-nowrap" v-html="ticket.severity_badge"></td>
                     <td class="whitespace-nowrap">{{ ticket.created_at }}</td>
                     <td class="text-right" v-if="!archived">
                         <Link :href="route('tickets.show', ticket.id)" v-if="type === 'internal'">

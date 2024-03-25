@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Ticket extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $dates = ['created_at', 'updated_at'];
+    protected $dates = ['created_at', 'updated_at', 'solved_date', 'closed_date'];
     protected $casts = [
         'created_at' => 'datetime:d M, Y h:i a',
         'updated_at' => 'datetime:d M, Y h:i a',
+        'solved_date' => 'datetime:d M, Y h:i a',
+        'closed_date' => 'datetime:d M, Y h:i a',
     ];
-    protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name', 'site_attention_time', 'remote_attention_time', 'total_attention_time', 'agent_name', 'department_name'];
+    protected $appends = ['number', 'status', 'status_badge', 'priority', 'severity', 'category_name', 'full_category_name', 'site_attention_time', 'remote_attention_time', 'total_attention_time', 'agent_name', 'department_name', 'priority_badge', 'severity_badge'];
     public function messages(){
         return $this->hasMany(ChatMessage::class);
     }
@@ -67,8 +69,6 @@ class Ticket extends Model
                 return 'Cerrado';
             case 7:
                 return 'Cancelado';
-            default:
-                return 'Abierto';
         }
     }
     public function getStatusBadgeAttribute()
@@ -89,7 +89,7 @@ class Ticket extends Model
             case 7:
                 return '<span class="badge badge-danger">Cancelado</span>';
             default:
-                return '<span class="badge badge-primary">Abierto</span>';
+                return '<span class="badge badge-secondary">Sin definir</span>';
         }
     }
     public function getPriorityAttribute()
@@ -103,8 +103,21 @@ class Ticket extends Model
                 return 'Alta';
             case 4:
                 return 'Urgente';
+        }
+    }
+    public function getPriorityBadgeAttribute()
+    {
+        switch ($this->priority_id) {
+            case 1:
+                return '<span class="badge badge-primary">Baja</span>';
+            case 2:
+                return '<span class="badge badge-info">Media</span>';
+            case 3:
+                return '<span class="badge badge-warning">Alta</span>';
+            case 4:
+                return '<span class="badge badge-danger">Urgente</span>';
             default:
-                return 'Baja';
+                return '<span class="badge badge-secondary">Sin definir</span>';
         }
     }
     public function getSeverityAttribute()
@@ -118,8 +131,21 @@ class Ticket extends Model
                 return 'Alta';
             case 4:
                 return 'Urgente';
+        }
+    }
+    public function getSeverityBadgeAttribute()
+    {
+        switch ($this->severity_id) {
+            case 1:
+                return '<span class="badge badge-primary">Baja</span>';
+            case 2:
+                return '<span class="badge badge-info">Media</span>';
+            case 3:
+                return '<span class="badge badge-warning">Alta</span>';
+            case 4:
+                return '<span class="badge badge-danger">Urgente</span>';
             default:
-                return 'Baja';
+                return '<span class="badge badge-secondary">Sin definir</span>';
         }
     }
     public function getSiteAttentionTimeAttribute()
@@ -217,5 +243,30 @@ class Ticket extends Model
         }else{
             return $days . $hours . $minutes;
         }
+    }
+
+    public function scopeUserPermission($query, $permission)
+    {
+
+        $user = auth()->user();
+
+        if($permission == 'Administrador'){
+            return $query;
+        }
+
+        if($permission == 'Colaborador'){
+            return $query;
+        }
+
+        if($permission == 'Ingeniero'){
+            return $query->where('user_id', $user->id)->orWhere('agent_id', $user->agent->id);
+        }
+
+        if($permission == 'Supervisor'){
+            return $query->where('department_id', $user->agent->department_id)
+                ->orWhere('user_id', $user->id)
+                ->orWhere('agent_id', $user->agent->id);
+        }
+        
     }
 }

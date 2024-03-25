@@ -8,20 +8,27 @@ use Illuminate\Http\Request;
 use App\Models\TicketCategory;
 use App\Models\TicketAttachment;
 use App\Providers\TicketArchivado;
-use Illuminate\Support\Facades\DB;
 use App\Providers\TicketModificado;
 use App\Providers\DesarchivarTicket;
-use Illuminate\Support\Facades\Mail;
 use App\Providers\AsignacionDeContacto;
 use App\Providers\AsignacionDeIngeniero;
 use App\Http\Requests\StoreTicketRequest;
 use App\Http\Requests\UpdateTicketRequest;
 use App\Http\Controllers\AccountController;
+use App\Providers\EnviarCredencialesAlContacto;
 class TicketController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('agent-ticket-owner')->only('show');
+        $this->middleware('ticket-cancelled')->only('show');
+    }
     public function index(Request $request)
     {
+        $user = auth()->user();
+        $permission = $user->permission->name;
         $filterdata = $request->filterdata;
+        $withoutAttended = $request->withoutAttended;
         $search = $request->search;
         $departments = Department::orderBy('name', 'ASC')->get();
         $agents = Agent::with('user')->get()->sortBy('user.name')->values()->all();
@@ -52,6 +59,7 @@ class TicketController extends Controller
                 ->orWhere('subject', 'like', '%' . $search . '%')
                 ->orWhere('account_name', 'like', '%' . $search . '%')
                 ->orderBy('id', 'DESC')
+                ->userPermission($permission)
                 ->paginate(10);
         }elseif($filterdata){
             $tickets = Ticket::when($request->department, function ($query, $department_id) {
@@ -68,10 +76,18 @@ class TicketController extends Controller
                 return $query->where('account_name', $account_name);
             })
             ->orderBy('id', 'DESC')
+            ->userPermission($permission)
             ->paginate(10)
             ->withQueryString();
+        }elseif($withoutAttended){
+            $tickets = Ticket::where('category_id', '')
+                ->orWhere('severity_id', '')
+                ->orWhere('priority_id', '')
+                ->userPermission($permission)
+                ->paginate(10);
         }else{
             $tickets = Ticket::orderBy('id', 'DESC')
+                ->userPermission($permission)
                 ->paginate(10);
         }
         return Inertia::render('Tickets/Index', [
@@ -105,11 +121,20 @@ class TicketController extends Controller
     }
     public function update_ticket($ticket, $request, $type = null)
     {
-        $ticket->user_id = $type == 'guest' ? null : auth()->user()->id;
+        $user = auth()->user();
+        $ticket->user_id = $type == 'guest' ? null : $user->id;
         $ticket->subject = $request->subject;
         $ticket->content = $request->content;
         $ticket->account_id = $request->account;
         $ticket->account_name = $request->account_name;
+        if($type == null){
+            if($user->permission->name == 'Ingeniero'){
+                $agent = Agent::where('user_id', $user->id)->first();
+                $ticket->agent_id = $agent->id;
+                $ticket->department_id = $agent->department_id;
+                event(new AsignacionDeIngeniero($agent, $ticket));
+            }
+        }
         $ticket->save();
         if ($request->hasFile('attachment')) {
             // We need to move the file to the public folder on attachments folder
@@ -182,6 +207,13 @@ class TicketController extends Controller
             ]);
         }
         $ticket->save();
+
+        if($ticket->status_id === 7){
+            return redirect()
+                ->route('tickets.index')
+                ->with('ticketCancelled', 'El ticket ha sido cancelado.');
+        }
+
         return redirect()
             ->back()
             ->with('ticketDetails', 'El ticket ha sido actualizado exitosamente.');
@@ -238,6 +270,13 @@ class TicketController extends Controller
         event(new AsignacionDeContacto($contact, $ticket));
         $response = "Se asignó a " . $contact['name'] . " como contacto de la cuenta.";
         return redirect()->back()->with('ticketContact', $response);
+    }
+    public function send_credentials_to_contact($contact){
+        $contact = app(AccountController::class)->get_password($contact);
+        event(new EnviarCredencialesAlContacto($contact));
+        return redirect()
+            ->back()
+            ->with('credentialsSended', 'Las credenciales han sido enviadas exitosamente.');
     }
     public function update_agent(Request $request, Ticket $ticket)
     {

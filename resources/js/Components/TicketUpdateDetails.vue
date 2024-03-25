@@ -80,6 +80,22 @@
                         </div>
                     </td>
                 </tr>
+                <tr v-if="ticket.solved_date">
+                    <th>
+                        Fecha de resolución:
+                    </th>
+                    <td>
+                        <span class="text-gray-600">{{ ticket.solved_date }}</span>
+                    </td>
+                </tr>
+                <tr v-if="ticket.closed_date">
+                    <th>
+                        Fecha de cierre:
+                    </th>
+                    <td>
+                        <span class="text-gray-600">{{ ticket.closed_date }}</span>
+                    </td>
+                </tr>
                 <tr v-if="type === 'guest'">
                     <th style="vertical-align: top;">Status:</th>
                     <td style="vertical-align: top;">

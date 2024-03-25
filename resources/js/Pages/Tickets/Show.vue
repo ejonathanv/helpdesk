@@ -34,7 +34,8 @@
                 </a>
                 <a href="#security" class="flex items-center space-x-3"
                     :class="{ active: currentTab === 'security' }"
-                    @click="tab('security')">
+                    @click="tab('security')"
+                    v-if="$page.props.auth.permissions !== 'Ingeniero'">
                     <i class="fa fa-fw fa-lock text-dynacom-red"></i>
                     <span>Seguridad</span>
                 </a>

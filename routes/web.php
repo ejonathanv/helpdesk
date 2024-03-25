@@ -17,9 +17,11 @@ use App\Http\Controllers\TicketCategoryController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 Route::redirect('/', '/dashboard');
 // Necesitamos crear un grupo de rutas con el prefix dashboard
-Route::middleware(['auth', 'verified', 'user-account-suspended'])
-    ->prefix('dashboard')
-    ->group(function () {
+Route::middleware([
+        'auth', 
+        'verified', 
+        'user-account-suspended'
+    ])->prefix('dashboard')->group(function () {
     // Ruta para notificaciones
     Route::group(['prefix' => 'notifications',], function () {
         Route::get('/', [
@@ -33,7 +35,7 @@ Route::middleware(['auth', 'verified', 'user-account-suspended'])
         ])->name('notifications.delete-all-read');
     });
 
-    // La primer ruta debe ser dashboard
+    // La primera ruta debe ser dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
     // Listado de cuentas
     Route::get('/accounts-list', [DashboardController::class, 'accounts'])->name('accounts-list');
@@ -45,6 +47,7 @@ Route::middleware(['auth', 'verified', 'user-account-suspended'])
     Route::get('get-subcategories/{parent}', [TicketCategoryController::class, 'subcategories'])->name('get-subcategories');
     Route::put('tickets/{ticket}/update-category', [TicketController::class, 'update_category'])->name('tickets.update-category');
     Route::put('tickets/{ticket}/update-contact', [TicketController::class, 'update_contact'])->name('tickets.update-contact');
+    Route::post('send-credentials/{contact}', [TicketController::class, 'send_credentials_to_contact'])->name('send-credentials-to-contact');
     Route::put('tickets/{ticket}/update-agent', [TicketController::class, 'update_agent'])->name('tickets.update-agent');
     Route::get('tickets/{ticket}/chat', [TicketController::class, 'chat'])->name('tickets.chat');
     Route::resource('tickets.messages', ChatMessageController::class);
@@ -53,13 +56,13 @@ Route::middleware(['auth', 'verified', 'user-account-suspended'])
     // Historias del ticket
     Route::resource('tickets.histories', HistoryController::class);
     // Edicion de ingenieros
-    Route::resource('agents', AgentController::class);
-    Route::post('agents/{agent}/personal-data', [AgentController::class, 'personal_data'])->name('agents.personal-data');
-    Route::post('agents/{agent}/update-permissions', [AgentController::class, 'update_permissions'])->name('agents.update-permissions');
-    Route::post('agents/{agent}/update-security', [AgentController::class, 'update_security'])->name('agents.update-security');
-    Route::post('agents/{agent}/suspend', [AgentController::class, 'suspend'])->name('agents.suspend');
+    Route::resource('agents', AgentController::class)->middleware('admin-module');
+    Route::post('agents/{agent}/personal-data', [AgentController::class, 'personal_data'])->name('agents.personal-data')->middleware('admin-module');
+    Route::post('agents/{agent}/update-permissions', [AgentController::class, 'update_permissions'])->name('agents.update-permissions')->middleware('admin-module');
+    Route::post('agents/{agent}/update-security', [AgentController::class, 'update_security'])->name('agents.update-security')->middleware('admin-module');
+    Route::post('agents/{agent}/suspend', [AgentController::class, 'suspend'])->name('agents.suspend')->middleware('admin-module');
     // Rutas de configuracion
-    Route::group(['prefix' => 'config'], function () {
+    Route::group(['prefix' => 'config', 'middleware' => 'admin-module'], function () {
         // Edicion de departamentos
         Route::resource('departments', DepartmentController::class);
     });

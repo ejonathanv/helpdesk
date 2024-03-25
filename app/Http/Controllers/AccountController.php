@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Exception\RequestException;
 
 class AccountController extends Controller
@@ -192,6 +193,62 @@ class AccountController extends Controller
         } catch (Exception $e) {
             // Manejar excepciones aquí
             return [];
+        }
+    }
+
+    public function get_password($contact_id){
+        $source = env('CRM_URL') . "/Contact/" . $contact_id;
+        $token = env('CRM_TOKEN');
+
+        $client = new Client();
+
+        try {
+            $response = $client->get($source, [
+                'headers' => [
+                    'X-Api-Key' => $token,
+                ],
+            ]);
+
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode === 200) {
+                $contact = json_decode($response->getBody()->getContents());
+                return [
+                    'id' => $contact->id,
+                    'name' => $contact->name,
+                    'email' => $contact->emailAddress,
+                    'password' => $contact->codigocontacto,
+                ];
+            } else {
+                // Manejar posibles errores de respuesta aquí
+                return [];
+            }
+        } catch (Exception $e) {
+            // Manejar excepciones aquí
+            return [];
+        }
+    }
+
+    public function generate_password($contact, $password){
+        $source = env('CRM_URL') . "/Contact/" . $contact['id'];
+        $token = env('CRM_TOKEN');
+
+        $client = new Client();
+
+        try {
+            $response = $client->put($source, [
+                'headers' => [
+                    'X-Api-Key' => $token,
+                ],
+                'json' => [
+                    'codigocontacto' => $password,
+                ],
+            ]);
+
+            return $response->getStatusCode();
+        } catch (Exception $e) {
+            // Manejar excepciones aquí
+            return 400;
         }
     }
 }

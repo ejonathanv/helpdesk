@@ -71,5 +71,8 @@ class Kernel extends HttpKernel
         'prevent-user-login' => \App\Http\Middleware\PreventUserLoginMiddleware::class,
         'guest-ticket' => \App\Http\Middleware\GuestTicket::class,
         'user-account-suspended' => \App\Http\Middleware\UserAccountSuspended::class,
+        'agent-ticket-owner' => \App\Http\Middleware\AgentTicketOwner::class,
+        'admin-module' => \App\Http\Middleware\AdminModule::class,
+        'ticket-cancelled' => \App\Http\Middleware\TicketCancelledMiddleware::class,
     ];
 }

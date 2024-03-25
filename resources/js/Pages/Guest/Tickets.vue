@@ -4,7 +4,7 @@
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Mis Tickets</h2>
         </template>
-        <div class="container py-7">
+        <div class="container full py-7">
             <div class="card">
                 <TicketsTable :tickets="tickets" type="guest" />
             </div>

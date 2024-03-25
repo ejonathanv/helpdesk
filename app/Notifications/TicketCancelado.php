@@ -8,18 +8,22 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class NewGuestTicket extends Notification
+class TicketCancelado extends Notification
 {
     use Queueable;
 
+
     public $ticket;
+    public $reason;
+
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($ticket)
+    public function __construct($ticket, $reason)
     {
         $this->ticket = $ticket;
+        $this->reason = $reason;
     }
 
     /**
@@ -29,7 +33,7 @@ class NewGuestTicket extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['database'];
     }
 
     /**
@@ -38,12 +42,9 @@ class NewGuestTicket extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject('Se ha creado un nuevo ticket')
-                    ->greeting('Hola ' . $notifiable->name)
-                    ->line('Se ha creado un nuevo ticket con el número #' . $this->ticket->number)
-                    ->action('Ver ticket', route('tickets.show', $this->ticket->id))
-                    ->line('Gracias por usar nuestra aplicación!')
-                    ->salutation('Saludos');
+                    ->line('The introduction to the notification.')
+                    ->action('Notification Action', url('/'))
+                    ->line('Thank you for using our application!');
     }
 
     /**
@@ -54,9 +55,9 @@ class NewGuestTicket extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => 'new_ticket',
-            'subject' => 'Se ha creado un nuevo ticket #' . $this->ticket->number,
-            'message' => $this->ticket->subject,
+            'type' => 'ticket_cancelled',
+            'subject' => 'Ticket #' . $this->ticket->number . ' ha sido cancelado por el contacto',
+            'message' => 'Razón: ' . $this->reason,
             'route' => route('tickets.show', $this->ticket->id),
             'date' => Carbon::now()->format('d M, Y H:i a'),
         ];

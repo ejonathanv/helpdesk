@@ -15,6 +15,7 @@ class NotificationController extends Controller
             if($notification){
                 $notification->markAsRead();
             }
+
             $route = $notification->data['route'];
             return redirect()->to($route);
     }

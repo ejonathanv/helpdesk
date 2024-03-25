@@ -2,13 +2,11 @@
 
 namespace App\Providers;
 
-use App\Mail\TicketStatusUpdated;
 use App\Providers\TicketModificado;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Queue\InteractsWithQueue;
 
-class NotificarModificacionesAlContacto
+class VerificarSiFueCerradoOResuelto
 {
     /**
      * Create the event listener.
@@ -24,10 +22,15 @@ class NotificarModificacionesAlContacto
     public function handle(TicketModificado $event): void
     {
         $ticket = $event->ticket;
-        $email_del_contacto = $ticket->contact_email;
 
-        if($email_del_contacto){
-            Mail::to($email_del_contacto)->send(new TicketStatusUpdated($ticket));
+        if($ticket->status_id == 2){
+            $ticket->solved_date = now();
+            $ticket->save();
+        }
+
+        if($ticket->status_id == 6){
+            $ticket->closed_date = now();
+            $ticket->save();
         }
     }
 }

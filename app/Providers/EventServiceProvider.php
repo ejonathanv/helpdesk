@@ -20,15 +20,21 @@ class EventServiceProvider extends ServiceProvider
             EnviarCorreoDeAsignacion::class,
         ],
         AsignacionDeIngeniero::class => [
+            TicketEnProceso::class,
             EnviarCorreoDeAsignacionAIngeniero::class,
             EnviarCorreoAContactoDeAsignacionAIngeniero::class,
         ],
         TicketModificado::class => [
+            VerificarSiFueCerradoOResuelto::class,
             NotificarModificacionesAlContacto::class,
         ],
         // ARCHIVAR Y ELIMINAR TICKETS
         TicketArchivado::class => [
             EstadoDelTicketArchivado::class,
+        ],
+        // CANCELACION DEL TICKET POR EL CONTACTO
+        TicketCanceladoPorContacto::class => [
+            EstadoDelTicketCancelado::class,
         ],
         DesarchivarTicket::class => [
             EstadoDelTicketDesarchivado::class,
@@ -47,6 +53,14 @@ class EventServiceProvider extends ServiceProvider
         // USUARIOS
         UsuarioCreado::class => [
             EnviarDatosDeAccesoAlNuevoUsuario::class,
+        ],
+        // CREDENCIALES
+        EnviarCredencialesAlContacto::class => [
+            EnviarCredencialesPorCorreoAlContacto::class,
+        ],
+        // GENERAR CREDENCIALES
+        CredencialesDeContacto::class => [
+            GenerarCredencialesDeContactoEnCrm::class,
         ],
 
     ];

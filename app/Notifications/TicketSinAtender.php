@@ -8,18 +8,18 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class NewGuestTicket extends Notification
+class TicketSinAtender extends Notification
 {
     use Queueable;
 
-    public $ticket;
+    public $tickets;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($ticket)
+    public function __construct(object $tickets)
     {
-        $this->ticket = $ticket;
+        $this->tickets = $tickets;
     }
 
     /**
@@ -29,7 +29,7 @@ class NewGuestTicket extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['database', 'mail'];
     }
 
     /**
@@ -38,12 +38,11 @@ class NewGuestTicket extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->subject('Se ha creado un nuevo ticket')
-                    ->greeting('Hola ' . $notifiable->name)
-                    ->line('Se ha creado un nuevo ticket con el número #' . $this->ticket->number)
-                    ->action('Ver ticket', route('tickets.show', $this->ticket->id))
-                    ->line('Gracias por usar nuestra aplicación!')
-                    ->salutation('Saludos');
+                    ->subject('Tickets sin atender')
+                    ->line('Tienes (' . $this->tickets->count() . ') tickets sin atender.')
+                    ->line('Por favor atiende los tickets que no tienen severidad, categoría o prioridad asignadas.')
+                    ->action('Ver tickets', route('tickets.index') . '?withoutAttended=true')
+                    ->salutation('Gracias.');
     }
 
     /**
@@ -54,10 +53,10 @@ class NewGuestTicket extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            'type' => 'new_ticket',
-            'subject' => 'Se ha creado un nuevo ticket #' . $this->ticket->number,
-            'message' => $this->ticket->subject,
-            'route' => route('tickets.show', $this->ticket->id),
+            'type' => 'tickets_unattended',
+            'subject' => '(' . $this->tickets->count() . ') Tickets sin atender',
+            'message' => 'Por favor atiende los tickets que no tienen severidad, categoría o prioridad asignadas.',
+            'route' => route('tickets.index') . '?withoutAttended=true',
             'date' => Carbon::now()->format('d M, Y H:i a'),
         ];
     }

@@ -22,7 +22,7 @@ class UpdateTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status_id' => 'required|integer|in:1,2,3,4,5,6',
+            'status_id' => 'required|integer|in:1,2,3,4,5,6,7',
             'priority_id' => 'required|integer|in:1,2,3,4',
             'severity_id' => 'required|integer|in:1,2,3,4',
         ];

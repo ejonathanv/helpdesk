@@ -54,8 +54,11 @@
         </div>
 
         <div v-else>
-            <p class="text-gray-600 font-bold border-l-2 border-dynacom-red p-4">
+            <p class="text-gray-600 font-bold border-l-2 border-dynacom-red p-4" v-if="type == 'internal'">
                 Para iniciar el chat, primero debes asignar un ingeniero y un contacto al ticket.
+            </p>
+            <p class="text-gray-600 font-bold border-l-2 border-dynacom-red p-4" v-else>
+                Aun no se ha asignado un ingeniero al ticket.
             </p>
         </div>
     </div>

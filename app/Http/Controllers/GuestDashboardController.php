@@ -9,13 +9,16 @@ use App\Mail\GuestTicketCreated;
 use Illuminate\Support\Facades\Mail;
 use App\Notifications\NewGuestTicket;
 use App\Http\Requests\CancelTicketRequest;
+use App\Providers\TicketCanceladoPorContacto;
 use App\Http\Requests\StoreGuestTicketRequest;
+
 class GuestDashboardController extends Controller
 {
 
     public function __construct()
     {
         $this->middleware('guest-ticket')->only('ticket', 'chat', 'histories', 'events');
+        $this->middleware('ticket-cancelled')->only('ticket');
     }
 
     public function index() {
@@ -99,14 +102,10 @@ class GuestDashboardController extends Controller
             ->with('ticketDetails', 'Se creó el ticket correctamente.');
     }
     public function cancel(CancelTicketRequest $request, Ticket $ticket){
-        $ticket->status_id = 7;
-        $ticket->cancellation_reason = $request->reason;
-        $ticket->save();
-        $ticket->histories()->create([
-            'user_id' => null,
-            'ticket_id' => $ticket->id,
-            'description' => 'El contacto canceló el ticket.'
-        ]);
+        $reason = $request->reason;
+
+        event(new TicketCanceladoPorContacto($ticket, $reason));
+
         return redirect()->route('guest.tickets')
             ->with('ticketDetails', 'Se canceló el ticket correctamente.');
     }

@@ -34,6 +34,7 @@ class HandleInertiaRequests extends Middleware
             ...parent::share($request),
             'auth' => [
                 'user' => $request->user(),
+                'permissions' => $request->user() ? $request->user()->permission->permission->name : null,
                 'unread_notifications_count' => $request->user() ? $request->user()->unreadNotifications()->count() : 0,
                 // Necesitamos revisar si un usuario guest esta en session
                 'guest' => [
@@ -47,10 +48,12 @@ class HandleInertiaRequests extends Middleware
             'flash' => [
                 'ticketDetails' => fn () => $request->session()->get('ticketDetails'),
                 'ticketContact' => fn () => $request->session()->get('ticketContact'),
+                'credentialsSended' => fn () => $request->session()->get('credentialsSended'),
                 'ticketAgent' => fn () => $request->session()->get('ticketAgent'),
                 'newEventCreated' => fn () => $request->session()->get('newEventCreated'),
                 'eventDeleted' => fn () => $request->session()->get('eventDeleted'),
                 'ticketArchived' => fn () => $request->session()->get('ticketArchived'),
+                'ticketCancelled' => fn () => $request->session()->get('ticketCancelled'),
                 'agentCreated' => fn () => $request->session()->get('agentCreated'),
                 'agentUpdated' => fn () => $request->session()->get('agentUpdated'),
                 'agentPermissionsUpdated' => fn () => $request->session()->get('agentPermissionsUpdated'),

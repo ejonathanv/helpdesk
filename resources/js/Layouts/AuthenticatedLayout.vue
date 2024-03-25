@@ -32,7 +32,7 @@ const showingNavigationDropdown = ref(false);
                                 <NavLink :href="route('tickets.index')" :active="route().current('tickets*')">
                                     Tickets
                                 </NavLink>
-                                <NavLink href="#">
+                                <NavLink href="#" v-if="$page.props.auth.permissions === 'Administrador'">
                                     Reportes
                                 </NavLink>
                             </div>
@@ -78,10 +78,21 @@ const showingNavigationDropdown = ref(false);
                                         </span>
                                     </template>
                                     <template #content>
-                                        <DropdownLink :href="route('profile.edit')"> Mi cuenta </DropdownLink>
-                                        <DropdownLink :href="route('agents.index')"> Usuarios </DropdownLink>
-                                        <DropdownLink :href="route('departments.index')"> Departamentos </DropdownLink>
-                                        <DropdownLink :href="route('tickets.archived')"> Archivado </DropdownLink>
+                                        <DropdownLink :href="route('profile.edit')"> 
+                                            Mi cuenta 
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('agents.index')" 
+                                            v-if="$page.props.auth.permissions === 'Administrador'">
+                                            Usuarios 
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('departments.index')"
+                                            v-if="$page.props.auth.permissions === 'Administrador'">
+                                            Departamentos 
+                                        </DropdownLink>
+                                        <DropdownLink :href="route('tickets.archived')"
+                                            v-if="$page.props.auth.permissions === 'Administrador'">
+                                            Archivado 
+                                        </DropdownLink>
                                         <DropdownLink :href="route('logout')" method="post" as="button">
                                             Cerrar sesión
                                         </DropdownLink>
